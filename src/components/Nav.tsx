@@ -13,6 +13,7 @@ interface NavProps {
 const NAV_TABS = [
   { href: '/', label: 'Feed' },
   { href: '/bear-book', label: 'Bear Book' },
+  { href: '/faq', label: 'FAQ' },
 ]
 
 export default function Nav({ user, username }: NavProps) {

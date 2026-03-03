@@ -51,7 +51,8 @@ export async function middleware(request: NextRequest) {
   const isPublic =
     pathname.startsWith('/auth/') ||
     pathname.startsWith('/api/') ||
-    pathname === '/waitlist'
+    pathname === '/waitlist' ||
+    pathname === '/faq'
 
   if (!isPublic && !user) {
     const redirectUrl = request.nextUrl.clone()
