@@ -17,89 +17,102 @@ export default function DropCard({ drop }: DropCardProps) {
   const timeLeft = formatDistanceToNow(resolvesAt, { addSuffix: true })
   const bearishPct = drop.conviction_score ?? drop.raw_conviction_pct ?? 0
 
-  // Border color by state
-  const borderColor = hot
-    ? 'border-l-hot'
-    : extended
-    ? 'border-l-swayze'
-    : 'border-l-border'
+  const cardClass = [
+    'drop-card',
+    hot ? 'hot' : '',
+    extended ? 'extended' : '',
+  ].filter(Boolean).join(' ')
 
   return (
     <article
-      className={`
-        bg-surface border border-border border-l-4 ${borderColor}
-        rounded-lg p-4 hover:border-muted transition-colors cursor-pointer
-      `}
+      className={`${cardClass} bg-surface border border-border rounded-xl hover:border-border-hl hover:bg-surface-2 transition-colors cursor-pointer`}
+      style={{ padding: '20px 24px' }}
       onClick={() => { window.location.href = `/drops/${drop.id}` }}
     >
-      {/* Top row: ticker + status badges */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="font-mono font-bold text-base">${drop.ticker}</span>
-          {drop.company_name && (
-            <span className="text-muted text-sm">{drop.company_name}</span>
-          )}
+      {/* Card top: left info + right conviction score */}
+      <div className="flex items-start justify-between gap-4 mb-3.5">
+
+        {/* Left: ticker row + status badges + thesis */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2.5 mb-1.5">
+            <span className="font-mono font-bold text-lg text-accent">${drop.ticker}</span>
+            {drop.company_name && (
+              <span className="text-[13px] text-text-dim">{drop.company_name}</span>
+            )}
+            {hot && (
+              <span
+                className="px-[9px] py-[3px] rounded-full text-[10px] font-mono font-bold tracking-[0.08em] uppercase bg-hot/10 text-hot border border-hot/25"
+                title="High conviction (≥80%) with high vote velocity — less than 7 days to resolution"
+              >
+                HOT
+              </span>
+            )}
+            {extended && (
+              <span
+                className="px-[9px] py-[3px] rounded-full text-[10px] font-mono font-bold tracking-[0.08em] uppercase bg-swayze/10 text-swayze border border-swayze/25"
+                title="Creator invoked SWAYZE — time horizon extended once. Reasoning is recorded on the Drop."
+              >
+                SWAYZE
+              </span>
+            )}
+          </div>
+          <p className="text-[13px] text-text-dim leading-relaxed line-clamp-2">
+            {drop.thesis}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          {hot && (
-            <span
-              className="text-xs bg-hot/15 text-hot px-2 py-0.5 rounded font-semibold uppercase tracking-wide"
-              title="High conviction (≥80%) with high vote velocity — less than 7 days to resolution"
-            >
-              🔥 Hot
-            </span>
-          )}
-          {extended && (
-            <span
-              className="text-xs bg-swayze/15 text-swayze px-2 py-0.5 rounded font-semibold uppercase tracking-wide"
-              title="Creator invoked SWAYZE — time horizon extended once. Reasoning is recorded on the Drop."
-            >
-              SWAYZE
-            </span>
-          )}
+
+        {/* Right: conviction score */}
+        <div className="shrink-0 text-right">
+          <div className="font-mono font-bold text-[28px] leading-none text-hot">
+            {bearishPct.toFixed(0)}%
+          </div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-[#555] mt-0.5">
+            Bearish
+          </div>
+          <div className="w-[120px] h-[4px] bg-border rounded-full overflow-hidden mt-1.5">
+            <div
+              className="h-full bg-hot conviction-bar rounded-full"
+              style={{ width: `${bearishPct}%` }}
+            />
+          </div>
         </div>
+
       </div>
 
-      {/* Thesis excerpt */}
-      <p className="text-sm text-muted mb-4 line-clamp-2">
-        {drop.thesis}
-      </p>
-
-      {/* Conviction bar */}
-      <div className="mb-3">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="font-mono text-hot font-semibold">{bearishPct.toFixed(0)}% Bearish</span>
-          <span className="text-muted">{drop.total_votes} votes</span>
-        </div>
-        <div className="h-1 bg-border rounded-full overflow-hidden">
-          <div
-            className="h-full bg-hot conviction-bar"
-            style={{ width: `${bearishPct}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Footer: creator + expiry + reddit */}
-      <div className="flex items-center justify-between text-xs text-muted">
-        <div className="flex items-center gap-2">
+      {/* Card bottom: creator + votes + expiry */}
+      <div className="flex items-center gap-4 pt-3.5 border-t border-border flex-wrap">
+        <div className="flex items-center gap-1.5 text-xs text-[#555]">
           {!drop.is_anonymous && drop.creator ? (
-            <a
-              href={`/profile/${drop.creator.username}`}
-              className="hover:text-text transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              @{drop.creator.username}
+            <>
+              <a
+                href={`/profile/${drop.creator.username}`}
+                className="text-accent-dim font-semibold hover:text-accent transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                @{drop.creator.username}
+              </a>
               {drop.creator.accuracy_score !== null && (
-                <span className="ml-1 text-accent">{drop.creator.accuracy_score.toFixed(0)}%</span>
+                <span className="px-1.5 py-px rounded bg-accent/8 text-accent-dim font-mono text-[10px] font-bold">
+                  {drop.creator.accuracy_score.toFixed(0)}%
+                </span>
               )}
-            </a>
+            </>
           ) : (
             <span>Anonymous</span>
           )}
         </div>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-1.5 text-xs text-[#555]">
+          <span className="text-text-dim font-medium">{drop.total_votes}</span>
+          <span>votes</span>
+        </div>
+
+        <div className="ml-auto flex items-center gap-3 text-xs text-[#555]">
           {drop.reddit_mention_count !== undefined && drop.reddit_mention_count > 0 && (
-            <span>{drop.reddit_mention_count} Reddit mentions</span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ff4500]" />
+              {drop.reddit_mention_count} Reddit mentions
+            </span>
           )}
           <span>Resolves {timeLeft}</span>
         </div>

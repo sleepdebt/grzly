@@ -1,11 +1,5 @@
 'use client'
 
-// Sign-in page
-// Route: /auth/sign-in
-//
-// Supports: email/password login
-// On success: redirects to ?redirectTo param or /
-
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -39,77 +33,83 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-bg flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="font-mono font-bold text-2xl mb-2">
-            GRZLY<span className="text-accent">.</span>
-          </div>
-          <p className="text-muted text-sm">Sign in to vote and drop theses.</p>
+          <a href="/" className="inline-block font-mono font-bold text-2xl text-accent tracking-[0.08em] mb-2">
+            GRZLY<span className="text-dim">.bear</span>
+          </a>
+          <p className="text-dim text-sm">Sign in to vote and drop theses.</p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSignIn} className="space-y-4">
-          <div>
-            <label className="block text-xs text-muted uppercase tracking-wide font-semibold mb-1.5">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              autoFocus
-              autoComplete="email"
-              placeholder="you@example.com"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-accent transition-colors"
-            />
+        {/* Card */}
+        <div className="relative bg-surface border border-border rounded-xl overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-accent via-accent-dim to-transparent" />
+
+          <div className="p-6">
+            <form onSubmit={handleSignIn} className="space-y-4">
+
+              <div>
+                <label className="block text-[11px] font-semibold text-muted uppercase tracking-[0.1em] mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  autoFocus
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className="w-full bg-surface-2 border border-border text-text px-3.5 py-3 rounded-lg text-sm focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-muted uppercase tracking-[0.1em] mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  className="w-full bg-surface-2 border border-border text-text px-3.5 py-3 rounded-lg text-sm focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+
+              {error && (
+                <div className="px-4 py-3 rounded-lg bg-[rgba(255,60,60,0.08)] border border-[rgba(255,60,60,0.3)] text-[#ff8080] text-sm">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading || !email || !password}
+                className="w-full py-3 bg-accent text-bg font-bold rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#d9ff1a] transition-colors mt-2"
+              >
+                {loading ? 'Signing in...' : 'Sign in →'}
+              </button>
+
+            </form>
           </div>
+        </div>
 
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-xs text-muted uppercase tracking-wide font-semibold">
-                Password
-              </label>
-              {/* TODO: add forgot password flow */}
-            </div>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              placeholder="••••••••"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-accent transition-colors"
-            />
-          </div>
-
-          {error && (
-            <p className="text-hot text-sm">{error}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading || !email || !password}
-            className="w-full py-2.5 bg-accent text-bg font-semibold rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
-          >
-            {loading ? 'Signing in...' : 'Sign in →'}
-          </button>
-        </form>
-
-        {/* Sign up link */}
-        <p className="text-center text-sm text-muted mt-6">
+        {/* Footer links */}
+        <p className="text-center text-sm text-dim mt-6">
           New to GRZLY?{' '}
           <a href="/auth/sign-up" className="text-accent hover:underline">
             Create an account
           </a>
         </p>
 
-        {/* Disclaimer */}
-        <p className="text-center text-xs text-muted mt-8 leading-relaxed">
-          By signing in, you agree that GRZLY content is not financial advice and does not
+        <p className="text-center text-[11px] text-muted mt-8 leading-relaxed px-4">
+          By signing in you agree that GRZLY content is not financial advice and does not
           constitute a recommendation to buy or sell any security.
         </p>
 

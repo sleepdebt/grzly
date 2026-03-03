@@ -2,7 +2,7 @@
 // PATCH /api/drops/:id — SWAYZE extension (creator only)
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import { generateExtensionLore } from '@/lib/lore'
 import { ExtendDropPayload, SwayzeReason } from '@/types'
 
@@ -131,15 +131,17 @@ export async function PATCH(
   }
 
   // Generate extension lore (non-blocking)
+  // Uses service role for lore_events (no user INSERT policy — server-only table)
   try {
     const lore = await generateExtensionLore(drop.ticker, reason, drop.thesis)
+    const serviceClient = createServiceRoleClient()
 
-    await supabase
+    await serviceClient
       .from('drops')
       .update({ lore_narrative: lore.narrative })
       .eq('id', id)
 
-    await supabase
+    await serviceClient
       .from('lore_events')
       .insert({
         drop_id: id,

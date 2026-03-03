@@ -94,48 +94,40 @@ export default function DropFeed({ initialDrops, initialParams }: DropFeedProps)
       </div>
 
       {/* Filter bar */}
-      <div className="flex items-center justify-between mb-6">
-        {/* Sort */}
-        <div className="flex gap-1">
-          {SORT_OPTIONS.map(option => (
-            <button
-              key={option.value}
-              onClick={() => setSort(option.value)}
-              className={`px-3 py-1.5 rounded text-sm transition-colors ${
-                sort === option.value
-                  ? 'bg-accent text-bg font-semibold'
-                  : 'text-muted hover:text-text'
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Horizon filters */}
-        <div className="flex gap-1">
+      <div className="flex items-center gap-2 mb-6 flex-wrap">
+        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#555] mr-1">
+          Sort
+        </span>
+        {SORT_OPTIONS.map(option => (
           <button
-            onClick={() => setHorizon(undefined)}
-            className={`px-3 py-1.5 rounded text-xs transition-colors ${
-              !horizon ? 'bg-surface-2 text-text' : 'text-muted hover:text-text'
-            }`}
+            key={option.value}
+            onClick={() => setSort(option.value)}
+            className={`filter-chip${sort === option.value ? ' active' : ''}`}
           >
-            All
+            {option.label}
           </button>
-          {HORIZON_OPTIONS.map(option => (
-            <button
-              key={option.value}
-              onClick={() => setHorizon(horizon === option.value ? undefined : option.value)}
-              className={`px-3 py-1.5 rounded text-xs transition-colors ${
-                horizon === option.value
-                  ? 'bg-surface-2 text-text'
-                  : 'text-muted hover:text-text'
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
+        ))}
+
+        <div className="w-px h-5 bg-border mx-1" />
+
+        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#555] mr-1">
+          Horizon
+        </span>
+        <button
+          onClick={() => setHorizon(undefined)}
+          className={`filter-chip${!horizon ? ' active' : ''}`}
+        >
+          All
+        </button>
+        {HORIZON_OPTIONS.map(option => (
+          <button
+            key={option.value}
+            onClick={() => setHorizon(horizon === option.value ? undefined : option.value)}
+            className={`filter-chip${horizon === option.value ? ' active' : ''}`}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
 
       {/* Drop cards */}

@@ -2,12 +2,9 @@
 
 // SwayzeModal — Drop extension modal
 //
-// Triggered by the "SWAYZE" button in the Drop detail sidebar.
+// Triggered by the "SWAYZE" button on the Drop detail page.
 // Only visible to the Drop creator.
-// Requires exactly one reason to be selected before confirming.
-// One extension per Drop, ever — the button is replaced after use.
-//
-// Visual spec: feed_and_detail.html — SWAYZE modal
+// One extension per Drop, ever — button is replaced with locked state after use.
 
 import { useState, useEffect, useRef } from 'react'
 import { SwayzeReason } from '@/types'
@@ -39,39 +36,36 @@ const REASONS: Reason[] = [
 interface SwayzeModalProps {
   dropId: string
   ticker: string
-  currentResolvesAt: string          // shown so creator knows what they're extending from
+  currentResolvesAt: string
   onExtended: (newResolvesAt: string, reason: SwayzeReason) => void
+  onClose: () => void
 }
 
-interface SwayzeButtonProps {
+export interface SwayzeButtonProps {
   dropId: string
   ticker: string
   currentResolvesAt: string
-  wasExtended: boolean                // if true, show locked state instead
-  isCreator: boolean                  // if false, don't render at all
+  wasExtended: boolean
+  isCreator: boolean
   onExtended: (newResolvesAt: string, reason: SwayzeReason) => void
 }
 
 // ─── Modal ────────────────────────────────────────────────────
 
-function Modal({ dropId, ticker, currentResolvesAt, onExtended }: SwayzeModalProps & { onClose: () => void }) {
+function Modal({ dropId, ticker, currentResolvesAt, onExtended, onClose }: SwayzeModalProps) {
   const [selectedReason, setSelectedReason] = useState<SwayzeReason | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
 
-  // Close on Escape
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onExtended('', 'timing_off') // signals close without action
-    }
+    function onKeyDown(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onExtended])
+  }, [onClose])
 
   async function handleConfirm() {
     if (!selectedReason || loading) return
-
     setLoading(true)
     setError(null)
 
@@ -89,104 +83,112 @@ function Modal({ dropId, ticker, currentResolvesAt, onExtended }: SwayzeModalPro
       return
     }
 
-    const newResolvesAt = data.drop.extended_resolves_at
-    onExtended(newResolvesAt, selectedReason)
+    onExtended(data.drop.extended_resolves_at, selectedReason)
   }
+
+  const resolvesDate = new Date(currentResolvesAt).toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
+  })
 
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-      onClick={(e) => { if (e.target === overlayRef.current) onExtended('', 'timing_off') }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={e => { if (e.target === overlayRef.current) onClose() }}
     >
-      <div className="bg-surface border border-border rounded-xl w-full max-w-md p-6 shadow-2xl">
+      <div className="relative bg-surface border border-border rounded-xl w-full max-w-md shadow-2xl overflow-hidden">
 
-        {/* Header */}
-        <div className="mb-5">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs px-2 py-0.5 bg-swayze/15 text-swayze rounded font-semibold uppercase tracking-wide">
-              SWAYZE
-            </span>
-            <span className="font-mono font-bold">${ticker}</span>
+        {/* Orange gradient top bar */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-swayze via-swayze/50 to-transparent" />
+
+        <div className="p-6">
+
+          {/* Header */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="font-mono text-[11px] font-bold tracking-[0.15em] uppercase px-2.5 py-1 bg-swayze/15 text-swayze rounded border border-swayze/30">
+                SWAYZE
+              </span>
+              <span className="font-mono font-bold text-text">${ticker}</span>
+            </div>
+            <h2 className="text-lg font-bold text-text mb-1.5">Invoke SWAYZE</h2>
+            <p className="text-sm text-dim leading-relaxed">
+              Extend your Drop beyond its original horizon. You can only do this once.
+              Your reason is permanent and public.
+            </p>
           </div>
-          <h2 className="text-base font-semibold">Invoke SWAYZE</h2>
-          <p className="text-sm text-muted mt-1">
-            Extend your Drop beyond its original horizon. You can only do this once.
-            Your reason is permanent and public.
+
+          {/* Current resolution date */}
+          <div className="flex items-center gap-2 bg-surface-2 border border-border rounded-lg px-4 py-3 mb-6 text-sm">
+            <span className="text-dim">Currently resolves:</span>
+            <span className="font-mono text-text font-medium">{resolvesDate}</span>
+            <span className="text-muted ml-auto text-xs">→ horizon doubles</span>
+          </div>
+
+          {/* Reason selection */}
+          <p className="font-mono text-[10px] text-muted tracking-[0.12em] uppercase mb-3">
+            Why are you extending? (required)
           </p>
-        </div>
-
-        {/* Current resolution date */}
-        <div className="bg-surface-2 rounded p-3 mb-5 text-sm">
-          <span className="text-muted">Currently resolves: </span>
-          <span className="font-mono">
-            {new Date(currentResolvesAt).toLocaleDateString('en-US', {
-              month: 'short', day: 'numeric', year: 'numeric'
-            })}
-          </span>
-          <span className="text-muted ml-2">→ will double the remaining horizon</span>
-        </div>
-
-        {/* Reason selection */}
-        <p className="text-xs text-muted uppercase tracking-wide font-semibold mb-3">
-          Why are you extending? (required)
-        </p>
-        <div className="space-y-2 mb-5">
-          {REASONS.map(reason => (
-            <button
-              key={reason.value}
-              onClick={() => setSelectedReason(reason.value)}
-              className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                selectedReason === reason.value
-                  ? 'border-swayze bg-swayze/10'
-                  : 'border-border hover:border-muted'
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-0.5">
-                <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+          <div className="space-y-2 mb-6">
+            {REASONS.map(reason => (
+              <button
+                key={reason.value}
+                onClick={() => setSelectedReason(reason.value)}
+                className={`w-full text-left px-4 py-3 rounded-lg border transition-all ${
                   selectedReason === reason.value
-                    ? 'border-swayze'
-                    : 'border-muted'
-                }`}>
-                  {selectedReason === reason.value && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-swayze" />
-                  )}
+                    ? 'border-swayze bg-swayze/10'
+                    : 'border-border bg-surface hover:border-[#3d3d3d]'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 mb-1">
+                  <div className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                    selectedReason === reason.value ? 'border-swayze' : 'border-muted'
+                  }`}>
+                    {selectedReason === reason.value && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-swayze" />
+                    )}
+                  </div>
+                  <span className="text-sm font-semibold text-text">{reason.label}</span>
                 </div>
-                <span className="text-sm font-medium">{reason.label}</span>
-              </div>
-              <p className="text-xs text-muted ml-5">{reason.description}</p>
+                <p className="text-xs text-dim ml-6 leading-relaxed">{reason.description}</p>
+              </button>
+            ))}
+          </div>
+
+          {/* Accuracy weight warning */}
+          <div className="flex gap-3 items-start bg-swayze/5 border border-swayze/20 rounded-lg px-4 py-3 mb-6">
+            <span className="text-swayze text-base flex-shrink-0 mt-px">⚠</span>
+            <p className="text-xs text-dim leading-relaxed">
+              If this Drop resolves correctly after extension, it counts at{' '}
+              <strong className="text-text">0.85×</strong> accuracy weight instead of 1.0×.
+              An on-time correct call is worth more.
+            </p>
+          </div>
+
+          {error && (
+            <div className="mb-4 px-4 py-3 rounded-lg bg-[rgba(255,60,60,0.08)] border border-[rgba(255,60,60,0.3)] text-[#ff8080] text-sm">
+              {error}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 border border-border text-dim rounded-lg text-sm font-medium hover:border-[#3d3d3d] hover:text-text transition-colors"
+            >
+              Cancel
             </button>
-          ))}
+            <button
+              onClick={handleConfirm}
+              disabled={!selectedReason || loading}
+              className="flex-1 py-3 bg-swayze text-bg font-bold rounded-lg text-sm tracking-wide disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#ffaa2e] transition-colors"
+            >
+              {loading ? 'Invoking...' : '⚡ Invoke SWAYZE'}
+            </button>
+          </div>
+
         </div>
-
-        {/* Accuracy warning */}
-        <div className="bg-surface-2 border border-border rounded p-3 mb-5 text-xs text-muted">
-          ⚠️ If this Drop resolves correctly after extension, it will count at{' '}
-          <strong className="text-text">0.85×</strong> accuracy weight instead of 1.0×.
-          An on-time correct call is worth more.
-        </div>
-
-        {error && (
-          <p className="text-hot text-sm mb-4">{error}</p>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => onExtended('', 'timing_off')}
-            className="flex-1 py-2.5 border border-border text-muted rounded text-sm hover:text-text transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleConfirm}
-            disabled={!selectedReason || loading}
-            className="flex-1 py-2.5 bg-swayze text-bg font-semibold rounded text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
-          >
-            {loading ? 'Invoking...' : 'Invoke SWAYZE →'}
-          </button>
-        </div>
-
       </div>
     </div>
   )
@@ -210,10 +212,13 @@ export default function SwayzeButton({
 
   if (extended) {
     return (
-      <div className="border border-swayze/30 rounded-lg p-3 text-center">
-        <p className="text-xs text-swayze font-semibold">SWAYZE invoked</p>
+      <div className="relative border border-swayze/30 rounded-lg p-4 overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-swayze/60 to-transparent" />
+        <p className="font-mono text-[11px] text-swayze tracking-[0.12em] uppercase mb-1">
+          SWAYZE invoked
+        </p>
         {extendedReason && (
-          <p className="text-xs text-muted mt-0.5">
+          <p className="text-xs text-dim">
             {REASONS.find(r => r.value === extendedReason)?.label}
           </p>
         )}
@@ -234,9 +239,9 @@ export default function SwayzeButton({
     <>
       <button
         onClick={() => setModalOpen(true)}
-        className="w-full py-2.5 border border-swayze text-swayze font-semibold rounded text-sm hover:bg-swayze hover:text-bg transition-colors text-center"
+        className="w-full py-2.5 border border-swayze/60 text-swayze font-semibold rounded-lg text-sm tracking-wide hover:bg-swayze hover:text-bg hover:border-swayze transition-all text-center"
       >
-        Invoke SWAYZE
+        ⚡ Invoke SWAYZE
       </button>
 
       {modalOpen && (

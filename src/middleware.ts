@@ -44,21 +44,19 @@ export async function middleware(request: NextRequest) {
 
   // ─── Route protection ──────────────────────────────────────
   //
-  // Protected routes require authentication.
-  // Add any paths here that should redirect to sign-in.
-  const protectedPaths = [
-    '/drops/create',
-    '/settings',
-  ]
+  // Everything is private by default. Only these paths are public.
+  // API routes handle their own auth — never redirect them to sign-in.
+  const { pathname } = request.nextUrl
 
-  const isProtectedPath = protectedPaths.some(path =>
-    request.nextUrl.pathname.startsWith(path)
-  )
+  const isPublic =
+    pathname.startsWith('/auth/') ||
+    pathname.startsWith('/api/') ||
+    pathname === '/waitlist'
 
-  if (isProtectedPath && !user) {
+  if (!isPublic && !user) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/auth/sign-in'
-    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+    redirectUrl.searchParams.set('redirectTo', pathname)
     return NextResponse.redirect(redirectUrl)
   }
 

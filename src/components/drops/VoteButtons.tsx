@@ -71,10 +71,12 @@ export default function VoteButtons({
   // Voting closed
   if (!votingOpen) {
     return (
-      <div className="border border-border rounded-lg p-5">
-        <p className="text-xs text-muted uppercase tracking-wide font-semibold mb-2">Voting</p>
-        <p className="text-sm text-muted">
-          {dropStatus === 'archived' ? 'This Drop has resolved. Voting is closed.' : 'Voting is closed.'}
+      <div className="bg-surface border border-border rounded-[12px] px-5 py-[18px]">
+        <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#555] mb-2">Voting</p>
+        <p className="text-[13px] text-text-dim">
+          {dropStatus === 'resolved' || dropStatus === 'archived'
+            ? 'Resolved — voting closed.'
+            : 'Voting is closed.'}
         </p>
       </div>
     )
@@ -83,20 +85,18 @@ export default function VoteButtons({
   // Already voted
   if (userVote) {
     return (
-      <div className="border border-border rounded-lg p-5 space-y-3">
-        <p className="text-xs text-muted uppercase tracking-wide font-semibold">Your vote</p>
-
-        <div className={`w-full py-2.5 rounded text-sm font-semibold text-center ${
+      <div className="bg-surface border border-border rounded-[12px] px-5 py-[18px]">
+        <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#555] mb-3">Your vote</p>
+        <div className={`w-full py-[11px] rounded-lg text-[13px] font-bold text-center border ${
           userVote === 'bearish'
-            ? 'bg-hot/15 border-2 border-hot text-hot'
-            : 'bg-surface-2 border border-border text-muted'
+            ? 'bg-hot border-hot text-white'
+            : 'bg-surface-2 border-border text-text-dim'
         }`}>
-          {userVote === 'bearish' ? '🐻 Bearish' : 'Skeptical'}
-          <span className="ml-2 text-xs opacity-60">· locked</span>
+          {userVote === 'bearish' ? 'Bearish' : 'Skeptical'}
+          <span className="ml-2 text-[11px] opacity-50 font-normal">locked</span>
         </div>
-
-        <p className="text-xs text-muted text-center">
-          Votes are immutable — your conviction is on record.
+        <p className="font-mono text-[11px] text-[#555] text-center mt-2.5">
+          Votes are immutable.
         </p>
       </div>
     )
@@ -104,41 +104,44 @@ export default function VoteButtons({
 
   // Not yet voted
   return (
-    <div className="border border-border rounded-lg p-5 space-y-3">
-      <p className="text-xs text-muted uppercase tracking-wide font-semibold">
+    <div className="bg-surface border border-border rounded-[12px] px-5 py-[18px]">
+      <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#555] mb-3">
         {isAuthenticated ? 'Cast your vote' : 'Vote on this Drop'}
       </p>
 
-      <button
-        onClick={() => handleVote('bearish')}
-        disabled={loading}
-        className="w-full py-2.5 border-2 border-hot text-hot font-semibold rounded text-sm hover:bg-hot hover:text-bg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        🐻 Bearish
-      </button>
-
-      <button
-        onClick={() => handleVote('skeptical')}
-        disabled={loading}
-        className="w-full py-2.5 border border-border text-muted font-semibold rounded text-sm hover:border-muted hover:text-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Skeptical
-      </button>
+      <div className="flex gap-2">
+        <button
+          onClick={() => handleVote('bearish')}
+          disabled={loading}
+          className="flex-1 py-[11px] rounded-lg text-[13px] font-bold border transition-all disabled:opacity-50 disabled:cursor-not-allowed
+            bg-hot/8 border-hot/30 text-hot hover:bg-hot/18 hover:border-hot"
+        >
+          Bearish
+        </button>
+        <button
+          onClick={() => handleVote('skeptical')}
+          disabled={loading}
+          className="flex-1 py-[11px] rounded-lg text-[13px] font-bold border transition-all disabled:opacity-50 disabled:cursor-not-allowed
+            bg-surface-2 border-border text-text-dim hover:border-border-hl hover:text-text"
+        >
+          Skeptical
+        </button>
+      </div>
 
       {!isAuthenticated && (
-        <p className="text-xs text-muted text-center">
+        <p className="font-mono text-[11px] text-[#555] text-center mt-2.5">
           <a
             href={`/auth/sign-in?redirectTo=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname : '')}`}
             className="text-accent hover:underline"
           >
             Sign in
           </a>{' '}
-          to vote and build your track record.
+          to vote and build your record.
         </p>
       )}
 
       {error && (
-        <p className="text-xs text-hot">{error}</p>
+        <p className="text-[11px] text-hot mt-2">{error}</p>
       )}
     </div>
   )

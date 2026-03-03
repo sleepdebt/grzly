@@ -12,14 +12,17 @@ const config: Config = {
         // GRZLY design tokens — matches the HTML prototypes
         bg: '#0a0a0a',
         surface: '#111111',
-        'surface-2': '#161616',
-        border: '#1e1e1e',
+        'surface-2': '#181818',
+        border: '#2a2a2a',
+        'border-hl': '#3d3d3d',
         text: '#e8e8e8',
-        muted: '#666666',
-        accent: '#c8ff00',    // lime — conviction, CTAs, positive signal
-        hot: '#ff3b30',       // red — hot drops, incorrect outcomes
-        swayze: '#ff9500',    // orange — extended drops
-        correct: '#34c759',   // green — correct outcomes
+        'text-dim': '#888888',
+        muted: '#888888',
+        accent: '#c8ff00',
+        'accent-dim': '#8ab300',
+        hot: '#ff3c3c',
+        swayze: '#ff9500',
+        correct: '#00e676',
       },
       fontFamily: {
         sans: ['Space Grotesk', 'system-ui', 'sans-serif'],

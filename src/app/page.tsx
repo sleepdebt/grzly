@@ -1,6 +1,8 @@
 // Feed page — server-rendered initial data, then real-time conviction updates
 // Route: /
+// When NEXT_PUBLIC_WAITLIST_MODE=true, redirects to the pre-launch waitlist page
 
+import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { DropWithCreator, FeedParams } from '@/types'
@@ -60,6 +62,10 @@ async function getDrops(params: FeedParams): Promise<DropWithCreator[]> {
 }
 
 export default async function FeedPage({ searchParams }: PageProps) {
+  if (process.env.NEXT_PUBLIC_WAITLIST_MODE === 'true') {
+    redirect('/waitlist')
+  }
+
   const params = await searchParams
   const drops = await getDrops(params)
 

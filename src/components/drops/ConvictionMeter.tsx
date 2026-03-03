@@ -71,50 +71,51 @@ export default function ConvictionMeter({
   const skepticalVotes = totalVotes - bearishVotes
 
   return (
-    <div className={`border rounded-lg p-5 text-center transition-colors duration-300 ${
+    <div className={`bg-surface border rounded-[12px] px-5 py-[18px] text-center transition-colors duration-300 ${
       justUpdated ? 'border-accent/60' : 'border-border'
     }`}>
 
       {/* Live indicator */}
-      <div className="flex items-center justify-center gap-1.5 mb-3">
-        <div className={`w-1.5 h-1.5 rounded-full ${justUpdated ? 'bg-accent' : 'bg-muted'} transition-colors`} />
-        <span className="text-xs text-muted">Live</span>
+      <div className="flex items-center justify-center gap-1.5 mb-4">
+        <div className={`w-1.5 h-1.5 rounded-full transition-colors ${justUpdated ? 'bg-accent' : 'bg-[#555]'}`} />
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[#555]">Live</span>
       </div>
 
       {/* Big score */}
-      <div className={`font-mono text-5xl font-bold mb-1 transition-colors duration-300 ${
-        score >= 75 ? 'text-hot' : score >= 50 ? 'text-swayze' : 'text-muted'
-      }`}>
+      <div className={`font-mono font-bold leading-none mb-1 transition-colors duration-300 ${
+        score >= 75 ? 'text-hot' : score >= 50 ? 'text-swayze' : 'text-text-dim'
+      }`} style={{ fontSize: '52px' }}>
         {score.toFixed(0)}%
       </div>
-      <div className="text-xs text-muted mb-4">Bearish conviction</div>
+      <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-[#555] mt-1 mb-3">
+        Bearish conviction
+      </div>
 
       {/* Bar */}
-      <div className="h-2 bg-border rounded-full overflow-hidden mb-4">
+      <div className="h-[6px] bg-border rounded-full overflow-hidden mb-2">
         <div
-          className={`h-full transition-all duration-500 ease-out ${
-            score >= 75 ? 'bg-hot' : score >= 50 ? 'bg-swayze' : 'bg-muted'
-          }`}
-          style={{ width: `${Math.min(score, 100)}%` }}
+          className="h-full rounded-full transition-all duration-500 ease-out"
+          style={{
+            width: `${Math.min(score, 100)}%`,
+            background: score >= 75
+              ? 'linear-gradient(90deg, #ff3c3c, #ff6b6b)'
+              : score >= 50
+              ? 'linear-gradient(90deg, #ff9500, #ffb340)'
+              : '#888',
+          }}
         />
       </div>
 
-      {/* Vote breakdown */}
-      <div className="grid grid-cols-2 gap-2 text-xs">
-        <div className="bg-surface-2 rounded p-2">
-          <div className="font-mono font-semibold text-hot">{bearishVotes}</div>
-          <div className="text-muted">Bearish</div>
-        </div>
-        <div className="bg-surface-2 rounded p-2">
-          <div className="font-mono font-semibold">{skepticalVotes}</div>
-          <div className="text-muted">Skeptical</div>
-        </div>
+      {/* Vote counts */}
+      <div className="flex justify-between font-mono text-[11px] text-[#555] mb-4">
+        <span className="text-hot">{bearishVotes} bearish</span>
+        <span>{skepticalVotes} skeptical</span>
       </div>
 
-      {/* Raw (unweighted) pct — shown below weighted score for transparency */}
+      {/* Raw pct — only shown when meaningfully different */}
       {Math.abs(rawPct - score) > 2 && (
-        <p className="text-xs text-muted mt-3">
-          Raw {rawPct.toFixed(0)}% · weighted by voter accuracy
+        <p className="text-[11px] text-[#555]">
+          Raw {rawPct.toFixed(0)}% · weighted by accuracy
         </p>
       )}
     </div>

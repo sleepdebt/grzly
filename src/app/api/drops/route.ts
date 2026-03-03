@@ -2,7 +2,7 @@
 // POST /api/drops — create a new Drop
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createServiceRoleClient } from '@/lib/supabase/server'
 import { getLatestClose, validateTicker } from '@/lib/polygon'
 import { generateCreationLore } from '@/lib/lore'
 import { CreateDropPayload, FeedParams } from '@/types'
@@ -147,17 +147,19 @@ export async function POST(req: NextRequest) {
   }
 
   // Generate lore (non-blocking — don't fail the request if lore fails)
+  // Uses service role for lore_events (no user INSERT policy — server-only table)
   try {
     const lore = await generateCreationLore(ticker.toUpperCase(), thesis)
+    const serviceClient = createServiceRoleClient()
 
     // Update drop with lore narrative
-    await supabase
+    await serviceClient
       .from('drops')
       .update({ lore_narrative: lore.narrative })
       .eq('id', drop.id)
 
     // Log lore event
-    await supabase
+    await serviceClient
       .from('lore_events')
       .insert({
         drop_id: drop.id,

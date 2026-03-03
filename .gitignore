@@ -8,6 +8,7 @@ out/
 # Environment variables — NEVER commit these
 .env.local
 .env.*.local
+vercel.env
 
 # Vercel
 .vercel

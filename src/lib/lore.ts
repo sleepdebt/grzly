@@ -6,11 +6,11 @@
 // NEVER break a Drop state transition due to lore failure.
 // ============================================================
 
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 import { DropOutcome, LoreEventType, SwayzeReason } from '@/types'
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
-const MODEL = process.env.OPENAI_LORE_MODEL ?? 'gpt-4o'
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+const MODEL = process.env.ANTHROPIC_LORE_MODEL ?? 'claude-haiku-4-5-20251001'
 const PROMPT_VERSION = process.env.LORE_PROMPT_VERSION ?? 'v1.0'
 
 // Tone instruction injected into every lore prompt
@@ -104,16 +104,16 @@ ${outcome === 'incorrect' ? 'Tone: honest, stoic, the bears acknowledge defeat w
 
 async function generateWithFallback(prompt: string, eventType: LoreEventType): Promise<string> {
   try {
-    const response = await openai.chat.completions.create({
+    const response = await anthropic.messages.create({
       model: MODEL,
-      messages: [{ role: 'user', content: prompt }],
       max_tokens: 200,
-      temperature: 0.85,
+      messages: [{ role: 'user', content: prompt }],
     })
-    const text = response.choices[0]?.message?.content?.trim()
+    const block = response.content[0]
+    const text = block.type === 'text' ? block.text.trim() : null
     if (text && text.length > 10) return text
   } catch (err) {
-    console.error(`[Lore] OpenAI generation failed for ${eventType}:`, err)
+    console.error(`[Lore] Anthropic generation failed for ${eventType}:`, err)
   }
   return FALLBACKS[eventType]
 }
