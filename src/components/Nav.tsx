@@ -24,7 +24,7 @@ export default function Nav({ user, username }: NavProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-bg">
-      <div className="max-w-5xl mx-auto px-8 h-[57px] flex items-center justify-between gap-8">
+      <div className="max-w-6xl mx-auto px-6 h-[57px] flex items-center justify-between gap-8">
 
         {/* Logo */}
         <a

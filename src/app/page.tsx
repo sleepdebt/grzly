@@ -70,7 +70,7 @@ export default async function FeedPage({ searchParams }: PageProps) {
   const drops = await getDrops(params)
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-6 py-8">
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold mb-1">Active Drops</h1>
