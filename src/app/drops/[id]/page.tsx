@@ -415,6 +415,39 @@ export default async function DropDetailPage({ params }: PageProps) {
             </div>
           </div>
 
+          {/* Pack Sentiment */}
+          {drop.pack_sentiment_score !== null && drop.pack_sentiment_score !== undefined && (() => {
+            const score = drop.pack_sentiment_score as number
+            const { color, dot, label } = score >= 76
+              ? { color: 'text-hot',        dot: 'bg-hot',        label: 'Howling'  }
+              : score >= 51
+              ? { color: 'text-swayze',     dot: 'bg-swayze',     label: 'Active'   }
+              : score >= 26
+              ? { color: 'text-[#c8a200]',  dot: 'bg-[#c8a200]',  label: 'Stirring' }
+              : { color: 'text-[#666]',     dot: 'bg-[#666]',     label: 'Quiet'    }
+            return (
+              <div className="bg-surface border border-border rounded-[12px] px-5 py-[18px]">
+                <h4 className="font-mono text-[10px] tracking-[0.12em] uppercase text-[#555] mb-3.5">
+                  Pack Sentiment
+                </h4>
+                <div className="flex items-end justify-between mb-2.5">
+                  <span className={`font-mono text-[28px] font-bold leading-none ${color}`}>
+                    {score}
+                  </span>
+                  <span className={`font-mono text-[11px] font-bold uppercase tracking-[0.08em] ${color}`}>
+                    {label}
+                  </span>
+                </div>
+                <div className="w-full h-[4px] bg-border rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full ${dot}`} style={{ width: `${score}%` }} />
+                </div>
+                <p className="text-[11px] text-[#555] mt-2.5 leading-relaxed">
+                  AI-rated bearish sentiment from news + Reddit. Updated nightly.
+                </p>
+              </div>
+            )
+          })()}
+
           {/* Short interest */}
           {drop.short_interest && (
             <div className="bg-surface border border-border rounded-[12px] px-5 py-[18px]">
