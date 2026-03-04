@@ -12,10 +12,10 @@ interface DropCardProps {
 
 function packSentimentMeta(score: number | null | undefined) {
   if (score === null || score === undefined) return null
-  if (score >= 76) return { color: 'text-hot',      label: 'Howling'  }
-  if (score >= 51) return { color: 'text-swayze',   label: 'Active'   }
-  if (score >= 26) return { color: 'text-[#c8a200]', label: 'Stirring' }
-  return               { color: 'text-[#444]',    label: 'Quiet'    }
+  if (score >= 76) return { color: 'text-hot',       dot: 'bg-hot',       label: 'Howling'  }
+  if (score >= 51) return { color: 'text-swayze',    dot: 'bg-swayze',    label: 'Active'   }
+  if (score >= 26) return { color: 'text-[#c8a200]', dot: 'bg-[#c8a200]', label: 'Stirring' }
+  return               { color: 'text-[#444]',    dot: 'bg-[#444]',    label: 'Quiet'    }
 }
 
 function PawIcon({ className }: { className?: string }) {
@@ -138,10 +138,10 @@ export default function DropCard({ drop }: DropCardProps) {
         </div>
 
         <div className="ml-auto flex items-center gap-3 text-xs text-[#555]">
-          {drop.reddit_mention_count !== undefined && drop.reddit_mention_count > 0 && (
+          {packMeta && drop.pack_sentiment_score !== null && (
             <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#ff4500]" />
-              {drop.reddit_mention_count} Reddit mentions
+              <span className={`w-1.5 h-1.5 rounded-full ${packMeta.dot}`} />
+              Pack Sentiment: {drop.pack_sentiment_score}
             </span>
           )}
           <span>Resolves {timeLeft}</span>
