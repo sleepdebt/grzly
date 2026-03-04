@@ -24,15 +24,17 @@ export default function Nav({ user, username }: NavProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-bg">
-      <div className="max-w-6xl mx-auto px-6 h-[57px] flex items-center justify-between gap-8">
+      <div className="max-w-6xl mx-auto px-6 h-[57px] flex items-center">
 
-        {/* Logo */}
-        <a
-          href="/"
-          className="font-mono font-bold text-xl tracking-[0.08em] text-accent shrink-0"
-        >
-          GRZLY<span className="text-[#555]">.</span>
-        </a>
+        {/* Logo — left, flex-1 so center tabs stay truly centered */}
+        <div className="flex-1">
+          <a
+            href="/"
+            className="font-mono font-bold text-xl tracking-[0.08em] text-accent"
+          >
+            GRZLY<span className="text-[#555]">.</span>
+          </a>
+        </div>
 
         {/* Center tabs */}
         <nav className="flex items-center gap-1">
@@ -54,8 +56,8 @@ export default function Nav({ user, username }: NavProps) {
           })}
         </nav>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        {/* Right actions — flex-1 + justify-end mirrors the left */}
+        <div className="flex-1 flex items-center justify-end gap-2.5">
           {user ? (
             <>
               <a
