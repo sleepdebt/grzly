@@ -18,18 +18,6 @@ function packSentimentMeta(score: number | null | undefined) {
   return               { color: 'text-[#444]',    dot: 'bg-[#444]',    label: 'Quiet'    }
 }
 
-function PawIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="13" height="13" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      {/* Three toes */}
-      <circle cx="6"  cy="8"  r="2.2" />
-      <circle cx="10" cy="6.5" r="2.2" />
-      <circle cx="14" cy="8"  r="2.2" />
-      {/* Main pad */}
-      <ellipse cx="10" cy="14.5" rx="5" ry="4" />
-    </svg>
-  )
-}
 
 export default function DropCard({ drop }: DropCardProps) {
   const hot = isHotDrop(drop)
@@ -60,14 +48,6 @@ export default function DropCard({ drop }: DropCardProps) {
             <span className="font-mono font-bold text-lg text-accent">${drop.ticker}</span>
             {drop.company_name && (
               <span className="text-[13px] text-text-dim">{drop.company_name}</span>
-            )}
-            {packMeta && (
-              <span
-                className={`flex items-center gap-1 ${packMeta.color}`}
-                title={`Pack Sentiment: ${drop.pack_sentiment_score} — ${packMeta.label}`}
-              >
-                <PawIcon />
-              </span>
             )}
             {hot && (
               <span
