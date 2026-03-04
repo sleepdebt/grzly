@@ -416,7 +416,6 @@ export default async function DropDetailPage({ params }: PageProps) {
                   currentResolvesAt={drop.resolves_at}
                   wasExtended={drop.was_extended}
                   isCreator={isCreator}
-                  onExtended={() => {}}
                 />
               )}
             </div>

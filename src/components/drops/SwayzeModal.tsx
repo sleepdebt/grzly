@@ -47,7 +47,7 @@ export interface SwayzeButtonProps {
   currentResolvesAt: string
   wasExtended: boolean
   isCreator: boolean
-  onExtended: (newResolvesAt: string, reason: SwayzeReason) => void
+  onExtended?: (newResolvesAt: string, reason: SwayzeReason) => void
 }
 
 // ─── Modal ────────────────────────────────────────────────────
@@ -231,7 +231,7 @@ export default function SwayzeButton({
     if (newResolvesAt) {
       setExtended(true)
       setExtendedReason(reason)
-      onExtended(newResolvesAt, reason)
+      onExtended?.(newResolvesAt, reason)
     }
   }
 
