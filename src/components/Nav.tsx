@@ -24,10 +24,10 @@ export default function Nav({ user, username }: NavProps) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-bg">
-      <div className="max-w-6xl mx-auto px-6 h-[57px] flex items-center">
+      <div className="max-w-6xl mx-auto px-6 h-[57px] flex items-center relative">
 
-        {/* Logo — left, flex-1 so center tabs stay truly centered */}
-        <div className="flex-1">
+        {/* Logo — left */}
+        <div>
           <a
             href="/"
             className="font-mono font-bold text-xl tracking-[0.08em] text-accent"
@@ -36,8 +36,8 @@ export default function Nav({ user, username }: NavProps) {
           </a>
         </div>
 
-        {/* Center tabs */}
-        <nav className="flex items-center gap-1">
+        {/* Center tabs — absolutely centered so they align with feed content center */}
+        <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1">
           {NAV_TABS.map(({ href, label }) => {
             const active = pathname === href
             return (
@@ -56,8 +56,8 @@ export default function Nav({ user, username }: NavProps) {
           })}
         </nav>
 
-        {/* Right actions — flex-1 + justify-end mirrors the left */}
-        <div className="flex-1 flex items-center justify-end gap-2.5">
+        {/* Right actions — ml-auto pushes to the right */}
+        <div className="ml-auto flex items-center gap-2.5">
           {user ? (
             <>
               <a
