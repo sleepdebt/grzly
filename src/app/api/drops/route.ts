@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const sort = (searchParams.get('sort') ?? 'conviction') as FeedParams['sort']
   const horizon = searchParams.get('horizon') ? Number(searchParams.get('horizon')) : undefined
+  const ticker = searchParams.get('ticker')?.toUpperCase() || undefined
   const page = Number(searchParams.get('page') ?? 1)
   const limit = Math.min(Number(searchParams.get('limit') ?? 20), 50)
   const offset = (page - 1) * limit
@@ -35,6 +36,10 @@ export async function GET(req: NextRequest) {
 
   if (horizon) {
     query = query.eq('time_horizon', `${horizon} days`)
+  }
+
+  if (ticker) {
+    query = query.eq('ticker', ticker)
   }
 
   switch (sort) {

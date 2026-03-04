@@ -15,7 +15,7 @@ interface PageProps {
 // Fetch drops server-side for initial render (SEO-friendly, fast first paint)
 async function getDrops(params: FeedParams): Promise<DropWithCreator[]> {
   const supabase = await createClient()
-  const { sort = 'conviction', horizon, page = 1, limit = 20 } = params
+  const { sort = 'conviction', horizon, ticker, page = 1, limit = 20 } = params
   const offset = (page - 1) * limit
 
   let query = supabase
@@ -36,6 +36,11 @@ async function getDrops(params: FeedParams): Promise<DropWithCreator[]> {
   if (horizon) {
     const horizonLabel = `${horizon} days`
     query = query.eq('time_horizon', horizonLabel)
+  }
+
+  // Apply ticker filter
+  if (ticker) {
+    query = query.eq('ticker', ticker.toUpperCase())
   }
 
   // Apply sort

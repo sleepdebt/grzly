@@ -211,6 +211,7 @@ export type HorizonFilter = 7 | 30 | 90 | 180
 export interface FeedParams {
   sort?: FeedSort
   horizon?: HorizonFilter
+  ticker?: string
   page?: number
   limit?: number
 }
