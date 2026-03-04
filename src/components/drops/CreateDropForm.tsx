@@ -60,6 +60,8 @@ export default function CreateDropForm() {
   const [thesis, setThesis] = useState('')
   const [evidenceType, setEvidenceType] = useState<EvidenceType>(null)
   const [evidenceValue, setEvidenceValue] = useState('')
+  const [evidenceLinks, setEvidenceLinks] = useState<string[]>([])
+  const [linkInput, setLinkInput] = useState('')
   const [creatorNote, setCreatorNote] = useState('')
 
   // Step 3 — Terms
@@ -114,7 +116,8 @@ export default function CreateDropForm() {
     if (s === 2) {
       if (thesis.length < 200) return `Thesis needs at least 200 characters (${thesis.length} so far). Make your case.`
       if (!evidenceType) return 'Select at least one type of evidence to support your thesis.'
-      if (!evidenceValue.trim()) return 'Fill in your evidence before continuing.'
+      if (evidenceType === 'link' && evidenceLinks.length === 0) return 'Add at least one source link.'
+      if (evidenceType !== 'link' && !evidenceValue.trim()) return 'Fill in your evidence before continuing.'
     }
     return null
   }
@@ -149,7 +152,7 @@ export default function CreateDropForm() {
       ticker,
       thesis,
       financial_metric: (evidenceType === 'metric' || evidenceType === 'news') ? evidenceValue : undefined,
-      evidence_links: evidenceType === 'link' ? [evidenceValue] : undefined,
+      evidence_links: evidenceType === 'link' && evidenceLinks.length > 0 ? evidenceLinks : undefined,
       time_horizon: horizon as CreateDropPayload['time_horizon'],
       target_price: targetPriceEnabled && targetPrice ? parseFloat(targetPrice) : null,
       is_anonymous: isAnonymous,
@@ -386,7 +389,7 @@ export default function CreateDropForm() {
                 <button
                   key={type}
                   type="button"
-                  onClick={() => { setEvidenceType(type); setEvidenceValue('') }}
+                  onClick={() => { setEvidenceType(type); setEvidenceValue(''); setEvidenceLinks([]); setLinkInput('') }}
                   className={`flex-1 px-3.5 py-2.5 border rounded-lg text-center text-xs font-medium transition-all ${
                     evidenceType === type
                       ? 'border-accent text-accent bg-[rgba(200,255,0,0.05)]'
@@ -417,13 +420,58 @@ export default function CreateDropForm() {
               />
             )}
             {evidenceType === 'link' && (
-              <input
-                type="text"
-                value={evidenceValue}
-                onChange={e => setEvidenceValue(e.target.value)}
-                placeholder="https://..."
-                className="w-full bg-surface border border-border text-text px-3.5 py-3 rounded-lg text-sm focus:outline-none focus:border-accent transition-colors"
-              />
+              <div>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={linkInput}
+                    onChange={e => setLinkInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        const url = linkInput.trim()
+                        if (url && !evidenceLinks.includes(url)) {
+                          setEvidenceLinks([...evidenceLinks, url])
+                          setLinkInput('')
+                        }
+                      }
+                    }}
+                    placeholder="https://..."
+                    className="flex-1 bg-surface border border-border text-text px-3.5 py-3 rounded-lg text-sm focus:outline-none focus:border-accent transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = linkInput.trim()
+                      if (url && !evidenceLinks.includes(url)) {
+                        setEvidenceLinks([...evidenceLinks, url])
+                        setLinkInput('')
+                      }
+                    }}
+                    disabled={!linkInput.trim()}
+                    className="px-4 py-3 bg-surface border border-border text-dim rounded-lg text-sm font-medium hover:border-[#3d3d3d] hover:text-text transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Add
+                  </button>
+                </div>
+                {evidenceLinks.length > 0 && (
+                  <div className="mt-2 space-y-1.5">
+                    {evidenceLinks.map((link, i) => (
+                      <div key={i} className="flex items-center gap-2 px-3 py-2 bg-surface-2 border border-border rounded-lg">
+                        <span className="text-[#555] text-xs flex-shrink-0">↗</span>
+                        <span className="text-xs text-text-dim flex-1 truncate">{link}</span>
+                        <button
+                          type="button"
+                          onClick={() => setEvidenceLinks(evidenceLinks.filter((_, j) => j !== i))}
+                          className="text-[#555] hover:text-[#ff3c3c] text-xs transition-colors flex-shrink-0"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -545,6 +593,24 @@ export default function CreateDropForm() {
             <p className="text-sm text-text leading-relaxed">
               {thesis.slice(0, 280)}{thesis.length > 280 ? '...' : ''}
             </p>
+            {evidenceType && (
+              <div className="mt-3 pt-3 border-t border-border">
+                {evidenceType === 'link' ? (
+                  <div className="space-y-1">
+                    {evidenceLinks.map((link, i) => (
+                      <div key={i} className="flex items-center gap-1.5 text-xs text-dim font-mono">
+                        <span className="text-[#555]">↗</span>
+                        <span className="truncate">{link}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-2 border border-border rounded text-xs font-mono text-dim">
+                    {evidenceType === 'metric' ? '📊' : '📰'} {evidenceValue}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Terms */}
