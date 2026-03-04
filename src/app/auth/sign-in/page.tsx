@@ -39,7 +39,7 @@ export default function SignInPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <a href="/" className="inline-block font-mono font-bold text-2xl text-accent tracking-[0.08em] mb-2">
-            GRZLY<span className="text-dim">.bear</span>
+            GRZLY<span className="text-dim">.</span>
           </a>
           <p className="text-dim text-sm">Sign in to vote and drop theses.</p>
         </div>

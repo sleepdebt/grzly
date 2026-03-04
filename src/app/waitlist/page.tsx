@@ -43,7 +43,7 @@ export default function WaitlistPage() {
       {/* ── Inline nav (replaces main app nav on this page) ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 h-[64px] bg-bg/80 backdrop-blur-[12px] border-b border-white/[0.04]">
         <a href="/" className="font-mono font-bold text-[20px] tracking-[0.08em] text-accent">
-          GRZLY<span className="text-[#444]">.bear</span>
+          GRZLY<span className="text-[#444]">.</span>
         </a>
         <div className="text-[13px] text-[#444]">
           Early access ·{' '}
@@ -231,7 +231,7 @@ export default function WaitlistPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-border flex items-center justify-between flex-wrap gap-3 px-12 py-8 text-[12px] text-[#444]">
         <div className="font-mono font-bold text-accent tracking-[0.08em]">
-          GRZLY<span className="text-[#444]">.bear</span>
+          GRZLY<span className="text-[#444]">.</span>
         </div>
         <p className="max-w-[500px] leading-[1.6] text-center">
           GRZLY publishes community short conviction data for research and entertainment purposes only. Nothing on this platform constitutes financial advice, investment recommendations, or an offer to buy or sell securities. Not a registered investment advisor or broker-dealer. Users act on their own conviction through their own brokers.
