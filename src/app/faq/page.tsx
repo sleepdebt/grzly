@@ -134,6 +134,12 @@ export default function FAQPage() {
             An optional plain-text annotation a Drop creator can add alongside their thesis —
             separate from the AI lore narrative, and written in the creator's own voice.
           </Term>
+          <Term name="Pack Sentiment">
+            A 0–100 bearish sentiment score computed nightly for each active Drop's ticker.
+            Aggregates recent news headlines and Reddit post titles via AI analysis —
+            0 is very bullish, 100 is very bearish. Displayed as a paw icon on Drop cards:
+            dim (Quiet), gold (Stirring), orange (Active), or red (Howling).
+          </Term>
         </div>
       </section>
 
