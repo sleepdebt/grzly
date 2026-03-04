@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/reddit-scraper",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/pack-sentiment",
+      "schedule": "0 12 * * *"
     }
   ]
 }

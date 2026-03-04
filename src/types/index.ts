@@ -80,6 +80,9 @@ export interface Drop {
   resolution_price: number | null
   price_change_pct: number | null
 
+  // Pack Sentiment (nightly AI score — see cron/pack-sentiment)
+  pack_sentiment_score: number | null
+
   // Outcome
   outcome: DropOutcome | null
   was_extended: boolean

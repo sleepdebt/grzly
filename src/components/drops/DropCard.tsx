@@ -10,9 +10,31 @@ interface DropCardProps {
   drop: DropWithCreator
 }
 
+function packSentimentMeta(score: number | null | undefined) {
+  if (score === null || score === undefined) return null
+  if (score >= 76) return { color: 'text-hot',      label: 'Howling'  }
+  if (score >= 51) return { color: 'text-swayze',   label: 'Active'   }
+  if (score >= 26) return { color: 'text-[#c8a200]', label: 'Stirring' }
+  return               { color: 'text-[#444]',    label: 'Quiet'    }
+}
+
+function PawIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="13" height="13" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+      {/* Three toes */}
+      <circle cx="6"  cy="8"  r="2.2" />
+      <circle cx="10" cy="6.5" r="2.2" />
+      <circle cx="14" cy="8"  r="2.2" />
+      {/* Main pad */}
+      <ellipse cx="10" cy="14.5" rx="5" ry="4" />
+    </svg>
+  )
+}
+
 export default function DropCard({ drop }: DropCardProps) {
   const hot = isHotDrop(drop)
   const extended = drop.status === 'extended'
+  const packMeta = packSentimentMeta(drop.pack_sentiment_score)
   const resolvesAt = new Date(drop.extended_resolves_at ?? drop.resolves_at)
   const timeLeft = formatDistanceToNow(resolvesAt, { addSuffix: true })
   const bearishPct = drop.conviction_score ?? drop.raw_conviction_pct ?? 0
@@ -38,6 +60,14 @@ export default function DropCard({ drop }: DropCardProps) {
             <span className="font-mono font-bold text-lg text-accent">${drop.ticker}</span>
             {drop.company_name && (
               <span className="text-[13px] text-text-dim">{drop.company_name}</span>
+            )}
+            {packMeta && (
+              <span
+                className={`flex items-center gap-1 ${packMeta.color}`}
+                title={`Pack Sentiment: ${drop.pack_sentiment_score} — ${packMeta.label}`}
+              >
+                <PawIcon />
+              </span>
             )}
             {hot && (
               <span
