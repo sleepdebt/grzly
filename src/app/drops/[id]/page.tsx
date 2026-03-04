@@ -442,7 +442,7 @@ export default async function DropDetailPage({ params }: PageProps) {
                   <div className={`h-full rounded-full ${dot}`} style={{ width: `${score}%` }} />
                 </div>
                 <p className="text-[11px] text-[#555] mt-2.5 leading-relaxed">
-                  AI-rated bearish sentiment from news + Reddit. Updated nightly.
+                  AI-rated bearish sentiment from news + social media sources. Updated nightly.
                 </p>
               </div>
             )
