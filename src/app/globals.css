@@ -2,20 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design tokens — dark (default) ────────────────────────── */
 :root {
-  --bg:         #0a0a0a;
-  --surface:    #111111;
-  --surface-2:  #181818;
-  --border:     #2a2a2a;
-  --border-hl:  #3d3d3d;
-  --text:       #e8e8e8;
-  --text-dim:   #888888;
-  --muted:      #888888;
-  --accent:     #c8ff00;
-  --accent-dim: #8ab300;
-  --hot:        #ff3c3c;
-  --swayze:     #ff9500;
-  --correct:    #00e676;
+  --bg:         10 10 10;
+  --surface:    17 17 17;
+  --surface-2:  24 24 24;
+  --border:     42 42 42;
+  --border-hl:  61 61 61;
+  --text:       232 232 232;
+  --text-dim:   136 136 136;
+  --muted:      136 136 136;
+  --accent:     200 255 0;
+  --accent-dim: 138 179 0;
+  --hot:        255 60 60;
+  --swayze:     255 149 0;
+  --correct:    0 230 118;
+}
+
+/* ─── Design tokens — light ──────────────────────────────────── */
+[data-theme="light"] {
+  --bg:         248 248 246;
+  --surface:    255 255 255;
+  --surface-2:  241 241 239;
+  --border:     224 224 220;
+  --border-hl:  196 196 192;
+  --text:       16 16 16;
+  --text-dim:   80 80 80;
+  --muted:      96 96 96;
+  --accent:     88 140 0;
+  --accent-dim: 60 96 0;
+  --hot:        204 28 28;
+  --swayze:     200 95 0;
+  --correct:    0 112 50;
 }
 
 * {
@@ -25,18 +43,18 @@
 }
 
 html {
-  background: var(--bg);
-  color: var(--text);
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+::-webkit-scrollbar-track { background: rgb(var(--bg)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--border)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted)); }
 
 /* Selection highlight */
-::selection { background: var(--accent); color: var(--bg); }
+::selection { background: rgb(var(--accent)); color: rgb(var(--bg)); }
 
 /* Conviction bar animation */
 @keyframes fill-bar {
@@ -54,7 +72,7 @@ html {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-dim), transparent);
+  background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-dim)), transparent);
 }
 
 /* Drop card — left stripe via ::before (dynamic color per state) */
@@ -67,12 +85,12 @@ html {
   position: absolute;
   top: 0; left: 0;
   width: 3px; height: 100%;
-  background: var(--border);
+  background: rgb(var(--border));
   transition: background 0.15s;
 }
-.drop-card:hover::before { background: var(--accent); }
-.drop-card.hot::before   { background: var(--hot); }
-.drop-card.extended::before { background: var(--swayze); }
+.drop-card:hover::before { background: rgb(var(--accent)); }
+.drop-card.hot::before   { background: rgb(var(--hot)); }
+.drop-card.extended::before { background: rgb(var(--swayze)); }
 
 /* Bear Book entry — left stripe (green = correct, red = incorrect) */
 .bb-entry {
@@ -85,20 +103,20 @@ html {
   top: 0; left: 0;
   width: 3px; height: 100%;
 }
-.bb-entry.correct::before  { background: var(--correct); }
-.bb-entry.incorrect::before { background: var(--hot); }
+.bb-entry.correct::before  { background: rgb(var(--correct)); }
+.bb-entry.incorrect::before { background: rgb(var(--hot)); }
 
 /* Filter chips — pill shape */
 .filter-chip {
   padding: 6px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid rgb(var(--border));
   border-radius: 100px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-dim);
-  background: var(--surface);
+  color: rgb(var(--text-dim));
+  background: rgb(var(--surface));
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
-.filter-chip:hover { border-color: var(--border-hl); color: var(--text); }
-.filter-chip.active { border-color: var(--accent); color: var(--accent); background: rgba(200,255,0,0.05); }
+.filter-chip:hover { border-color: rgb(var(--border-hl)); color: rgb(var(--text)); }
+.filter-chip.active { border-color: rgb(var(--accent)); color: rgb(var(--accent)); background: rgb(var(--accent) / 0.05); }

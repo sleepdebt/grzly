@@ -55,6 +55,8 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${spaceMono.variable}`}>
+      {/* Runs before React hydration to avoid theme flash */}
+      <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('grzly-theme');if(t)document.documentElement.setAttribute('data-theme',t);})()` }} />
       <body className="bg-bg text-text font-sans antialiased">
         <Nav user={user} username={username} />
 

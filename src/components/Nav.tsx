@@ -4,6 +4,7 @@
 // Logo (lime mono) | center tabs with active state | right actions
 
 import { usePathname } from 'next/navigation'
+import ThemeToggle from '@/components/ThemeToggle'
 
 interface NavProps {
   user: { id: string } | null
@@ -58,6 +59,7 @@ export default function Nav({ user, username }: NavProps) {
 
         {/* Right actions — ml-auto pushes to the right */}
         <div className="ml-auto flex items-center gap-2.5">
+          <ThemeToggle />
           {user ? (
             <>
               <a

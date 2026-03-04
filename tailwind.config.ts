@@ -9,20 +9,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // GRZLY design tokens — matches the HTML prototypes
-        bg: '#0a0a0a',
-        surface: '#111111',
-        'surface-2': '#181818',
-        border: '#2a2a2a',
-        'border-hl': '#3d3d3d',
-        text: '#e8e8e8',
-        'text-dim': '#888888',
-        muted: '#888888',
-        accent: '#c8ff00',
-        'accent-dim': '#8ab300',
-        hot: '#ff3c3c',
-        swayze: '#ff9500',
-        correct: '#00e676',
+        // GRZLY design tokens — CSS variable–driven so both themes work
+        // including opacity utilities like bg-hot/10, bg-accent/8, etc.
+        bg:           'rgb(var(--bg) / <alpha-value>)',
+        surface:      'rgb(var(--surface) / <alpha-value>)',
+        'surface-2':  'rgb(var(--surface-2) / <alpha-value>)',
+        border:       'rgb(var(--border) / <alpha-value>)',
+        'border-hl':  'rgb(var(--border-hl) / <alpha-value>)',
+        text:         'rgb(var(--text) / <alpha-value>)',
+        'text-dim':   'rgb(var(--text-dim) / <alpha-value>)',
+        muted:        'rgb(var(--muted) / <alpha-value>)',
+        accent:       'rgb(var(--accent) / <alpha-value>)',
+        'accent-dim': 'rgb(var(--accent-dim) / <alpha-value>)',
+        hot:          'rgb(var(--hot) / <alpha-value>)',
+        swayze:       'rgb(var(--swayze) / <alpha-value>)',
+        correct:      'rgb(var(--correct) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
