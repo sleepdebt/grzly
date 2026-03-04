@@ -101,7 +101,7 @@ export async function getCompanyNews(
     to: toStr,
   })
 
-  if (!articles || articles.length === 0) return []
+  if (!Array.isArray(articles) || articles.length === 0) return []
 
   // Sort by newest first, deduplicate by headline, take limit
   const seen = new Set<string>()
