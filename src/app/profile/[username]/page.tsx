@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { Profile, Drop } from '@/types'
 import ProfileTabs from '@/components/profile/ProfileTabs'
+import ThemeToggle from '@/components/ThemeToggle'
 
 interface PageProps {
   params: Promise<{ username: string }>
@@ -67,6 +68,11 @@ export default async function ProfilePage({ params }: PageProps) {
   if (!data) notFound()
 
   const { profile, activeDrops, resolvedDrops } = data
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isOwner = !!user && user.id === profile.id
+
   const showAccuracy = profile.resolved_drop_count >= 3
   const incorrectCount = profile.resolved_drop_count - profile.correct_drop_count
   const joinedDate = new Date(profile.created_at).toLocaleDateString('en-US', {
@@ -77,7 +83,7 @@ export default async function ProfilePage({ params }: PageProps) {
     <div className="max-w-[900px] mx-auto px-6 py-8 pb-20">
 
       {/* Profile header */}
-      <div className="flex items-start gap-6 mb-8 pb-8 border-b border-border">
+      <div className="flex items-start gap-6 mb-8 pb-8 border-b border-border relative">
 
         {/* Avatar */}
         <div className="w-[72px] h-[72px] rounded-full bg-surface-2 border-2 border-border-hl flex items-center justify-center font-mono text-[24px] font-bold text-accent flex-shrink-0">
@@ -96,6 +102,13 @@ export default async function ProfilePage({ params }: PageProps) {
             <p className="text-[14px] text-text-dim leading-[1.6]">{profile.bio}</p>
           )}
         </div>
+
+        {/* Theme toggle — only visible to the profile owner */}
+        {isOwner && (
+          <div className="absolute top-0 right-0">
+            <ThemeToggle />
+          </div>
+        )}
 
         {/* Accuracy block */}
         {showAccuracy && profile.accuracy_score !== null && (
