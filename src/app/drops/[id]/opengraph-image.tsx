@@ -2,7 +2,6 @@
 // Renders as the og:image for /drops/[id]
 
 import { ImageResponse } from 'next/og'
-import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -14,18 +13,46 @@ export default async function OGImage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const supabase = createServiceRoleClient()
 
-  const { data: drop } = await supabase
-    .from('drops')
-    .select(`
-      ticker, company_name, thesis, conviction_score, raw_conviction_pct,
-      total_votes, bearish_votes, status, outcome, time_horizon,
-      resolves_at, extended_resolves_at, is_anonymous, price_change_pct,
-      creator:profiles!drops_created_by_fkey (username)
-    `)
-    .eq('id', id)
-    .single()
+  // Fetch via REST API to work around Supabase JS SDK in OG image context
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+  type DropRow = {
+    ticker: string
+    company_name: string | null
+    thesis: string | null
+    conviction_score: number | null
+    raw_conviction_pct: number | null
+    total_votes: number | null
+    status: string
+    outcome: string | null
+    time_horizon: string | null
+    resolves_at: string
+    extended_resolves_at: string | null
+    is_anonymous: boolean
+    price_change_pct: number | null
+    creator: { username: string } | { username: string }[] | null
+  }
+
+  let drop: DropRow | null = null
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/drops?id=eq.${id}&select=ticker,company_name,thesis,conviction_score,raw_conviction_pct,total_votes,status,outcome,time_horizon,resolves_at,extended_resolves_at,is_anonymous,price_change_pct,creator:profiles!drops_created_by_fkey(username)&limit=1`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          Accept: 'application/json',
+        },
+      }
+    )
+    const rows = (await res.json()) as DropRow[]
+    drop = rows?.[0] ?? null
+  } catch {
+    // Return fallback image on error
+  }
 
   const conviction = drop?.conviction_score ?? drop?.raw_conviction_pct ?? 0
   const convictionPct = Math.round(conviction)

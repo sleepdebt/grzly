@@ -3,7 +3,6 @@
 // Automatically picked up by Next.js for og:image meta tag
 
 import { ImageResponse } from 'next/og'
-import { createServiceRoleClient } from '@/lib/supabase/server'
 
 export const runtime = 'nodejs'
 export const size = { width: 1200, height: 630 }
@@ -15,13 +14,39 @@ export default async function OGImage({
   params: Promise<{ username: string }>
 }) {
   const { username } = await params
-  const supabase = createServiceRoleClient()
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('username, avatar_url, bio, accuracy_score, drop_count, resolved_drop_count, correct_drop_count')
-    .eq('username', username)
-    .single()
+  // Fetch via REST API to work around Supabase JS SDK in OG image context
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+  type ProfileRow = {
+    username: string
+    avatar_url: string | null
+    bio: string | null
+    accuracy_score: number | null
+    drop_count: number
+    resolved_drop_count: number
+    correct_drop_count: number
+  }
+
+  let profile: ProfileRow | null = null
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/profiles?username=eq.${encodeURIComponent(username)}&select=username,avatar_url,bio,accuracy_score,drop_count,resolved_drop_count,correct_drop_count&limit=1`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          Accept: 'application/json',
+        },
+      }
+    )
+    const rows = (await res.json()) as ProfileRow[]
+    profile = rows?.[0] ?? null
+  } catch {
+    // Return fallback image on error
+  }
 
   const showAccuracy = !!profile && profile.resolved_drop_count >= 3
   const initials = profile ? profile.username.slice(0, 2).toUpperCase() : 'GR'
