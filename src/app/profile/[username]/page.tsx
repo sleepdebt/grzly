@@ -11,6 +11,7 @@ import ProfileTabs from '@/components/profile/ProfileTabs'
 import EditProfileModal from '@/components/profile/EditProfileModal'
 import ShareProfileButton from '@/components/profile/ShareProfileButton'
 import ProBadge from '@/components/profile/ProBadge'
+import ApiKeyManager from '@/components/profile/ApiKeyManager'
 import ThemeToggle from '@/components/ThemeToggle'
 
 interface PageProps {
@@ -208,6 +209,9 @@ export default async function ProfilePage({ params }: PageProps) {
 
       {/* Tabs + track record (client component) */}
       <ProfileTabs activeDrops={activeDrops} resolvedDrops={resolvedDrops} />
+
+      {/* API key manager — Pro owners only */}
+      {isOwner && isPro && <ApiKeyManager />}
 
     </div>
   )
