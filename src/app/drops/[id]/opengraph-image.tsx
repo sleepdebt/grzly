@@ -38,6 +38,14 @@ export default async function OGImage({
     ? (isCorrect ? '#22c55e' : '#ff3b30')
     : drop?.status === 'extended' ? '#ff9500' : '#c8ff00'
 
+  // Satori doesn't support 8-digit hex colors — use explicit rgba
+  const statusBg = isResolved
+    ? (isCorrect ? 'rgba(34,197,94,0.1)' : 'rgba(255,59,48,0.1)')
+    : drop?.status === 'extended' ? 'rgba(255,149,0,0.1)' : 'rgba(200,255,0,0.1)'
+  const statusBorder = isResolved
+    ? (isCorrect ? 'rgba(34,197,94,0.25)' : 'rgba(255,59,48,0.25)')
+    : drop?.status === 'extended' ? 'rgba(255,149,0,0.25)' : 'rgba(200,255,0,0.25)'
+
   const statusLabel  = isResolved
     ? (isCorrect ? '✓ CORRECT' : '✗ INCORRECT')
     : drop?.status === 'extended' ? 'SWAYZE' : isHot ? '🔥 HOT' : 'ACTIVE'
@@ -81,8 +89,8 @@ export default async function OGImage({
               display: 'flex',
               alignItems: 'center',
               gap: '7px',
-              backgroundColor: `${statusColor}18`,
-              border: `1px solid ${statusColor}40`,
+              backgroundColor: statusBg,
+              border: `1px solid ${statusBorder}`,
               borderRadius: '20px',
               padding: '6px 16px',
             }}
