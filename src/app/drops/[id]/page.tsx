@@ -116,12 +116,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!data) return { title: 'Drop Not Found' }
 
-  const convStr = data.conviction_score !== null
-    ? ` · ${Math.round(data.conviction_score)}% bearish conviction`
-    : ''
-  const outcomeStr = data.outcome === 'correct' ? ' · ✓ Correct'
-    : data.outcome === 'incorrect' ? ' · ✗ Incorrect' : ''
-  const description = `${data.thesis.slice(0, 120)}${convStr}${outcomeStr}. Not financial advice.`
+  // Truncate thesis at word boundary
+  const thesis = data.thesis
+  const truncated = thesis.length > 120
+    ? thesis.slice(0, thesis.lastIndexOf(' ', 120)) + '…'
+    : thesis
+
+  const parts: string[] = [truncated]
+  if (data.conviction_score !== null) parts.push(`${Math.round(data.conviction_score)}% bearish conviction`)
+  if (data.outcome === 'correct')   parts.push('✓ Correct')
+  if (data.outcome === 'incorrect') parts.push('✗ Incorrect')
+  parts.push('Not financial advice.')
+  const description = parts.join(' · ')
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
 
