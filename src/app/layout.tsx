@@ -19,6 +19,8 @@ const spaceMono = Space_Mono({
 })
 
 export const metadata: Metadata = {
+  // metadataBase ensures og:image URLs are absolute — required for Slack, iMessage, etc.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://grzly.io'),
   title: {
     template: '%s — GRZLY',
     default: 'GRZLY — The bears are organizing.',
