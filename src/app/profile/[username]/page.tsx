@@ -5,10 +5,12 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
+import { isProUser } from '@/lib/subscription'
 import { Profile, Drop } from '@/types'
 import ProfileTabs from '@/components/profile/ProfileTabs'
 import EditProfileModal from '@/components/profile/EditProfileModal'
 import ShareProfileButton from '@/components/profile/ShareProfileButton'
+import ProBadge from '@/components/profile/ProBadge'
 import ThemeToggle from '@/components/ThemeToggle'
 
 interface PageProps {
@@ -105,6 +107,7 @@ export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isOwner = !!user && user.id === profile.id
+  const isPro = isOwner ? await isProUser(profile.id) : await isProUser(profile.id)
 
   const showAccuracy = profile.resolved_drop_count >= 3
   const incorrectCount = profile.resolved_drop_count - profile.correct_drop_count
@@ -140,6 +143,7 @@ export default async function ProfilePage({ params }: PageProps) {
               {profile.username}
             </h1>
             <EditProfileModal profile={profile} isOwner={isOwner} />
+            <ProBadge isPro={isPro} isOwner={isOwner} />
             <ShareProfileButton
               username={profile.username}
               accuracyScore={profile.accuracy_score}
