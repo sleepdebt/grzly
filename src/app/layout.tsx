@@ -42,15 +42,17 @@ export default async function RootLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Fetch username for profile link (if signed in)
+  // Fetch username + avatar for nav (if signed in)
   let username: string | null = null
+  let avatarUrl: string | null = null
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('username')
+      .select('username, avatar_url')
       .eq('id', user.id)
       .single()
-    username = profile?.username ?? null
+    username  = profile?.username   ?? null
+    avatarUrl = profile?.avatar_url ?? null
   }
 
   return (
@@ -58,7 +60,7 @@ export default async function RootLayout({
       {/* Runs before React hydration to avoid theme flash */}
       <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('grzly-theme');if(t)document.documentElement.setAttribute('data-theme',t);})()` }} />
       <body className="bg-bg text-text font-sans antialiased">
-        <Nav user={user} username={username} />
+        <Nav user={user} username={username} avatarUrl={avatarUrl} />
 
         <main className="min-h-screen">
           {children}

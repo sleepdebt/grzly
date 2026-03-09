@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 interface NavProps {
   user: { id: string } | null
   username: string | null
+  avatarUrl: string | null
 }
 
 const NAV_TABS = [
@@ -16,7 +17,7 @@ const NAV_TABS = [
   { href: '/faq', label: 'FAQ' },
 ]
 
-export default function Nav({ user, username }: NavProps) {
+export default function Nav({ user, username, avatarUrl }: NavProps) {
   const pathname = usePathname()
 
   // Waitlist landing page has its own inline nav
@@ -69,10 +70,20 @@ export default function Nav({ user, username }: NavProps) {
               {username && (
                 <a
                   href={`/profile/${username}`}
-                  className="w-8 h-8 rounded-full bg-surface-2 border border-border flex items-center justify-center font-mono text-xs text-accent font-bold hover:border-border-hl transition-colors"
+                  className="w-8 h-8 rounded-full border border-border hover:border-border-hl transition-colors overflow-hidden flex-shrink-0"
                   title={`@${username}`}
                 >
-                  {username.slice(0, 2).toUpperCase()}
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={`@${username}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-surface-2 flex items-center justify-center font-mono text-xs text-accent font-bold">
+                      {username.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
                 </a>
               )}
               <form action="/auth/sign-out" method="POST">
