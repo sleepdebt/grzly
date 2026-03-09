@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Profile, Drop } from '@/types'
 import ProfileTabs from '@/components/profile/ProfileTabs'
 import EditProfileModal from '@/components/profile/EditProfileModal'
+import ShareProfileButton from '@/components/profile/ShareProfileButton'
 import ThemeToggle from '@/components/ThemeToggle'
 
 interface PageProps {
@@ -56,9 +57,40 @@ async function getProfile(username: string): Promise<{
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { username } = await params
+  const supabase = await createClient()
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('accuracy_score, drop_count, resolved_drop_count, bio')
+    .eq('username', username)
+    .single()
+
+  const showAccuracy = !!profile && profile.resolved_drop_count >= 3
+  const accuracyStr = showAccuracy && profile.accuracy_score !== null
+    ? ` · ${profile.accuracy_score.toFixed(0)}% accuracy`
+    : ''
+  const dropStr = profile ? ` · ${profile.drop_count} Drops` : ''
+  const description = profile?.bio
+    ? profile.bio
+    : `GRZLY Vibelord @${username}${accuracyStr}${dropStr}. Short conviction track record. Not financial advice.`
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+
   return {
     title: `@${username}`,
-    description: `GRZLY Vibelord profile for @${username}. Short conviction track record.`,
+    description,
+    openGraph: {
+      title: `@${username} on GRZLY`,
+      description,
+      url: `${appUrl}/profile/${username}`,
+      siteName: 'GRZLY',
+      type: 'profile',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `@${username} on GRZLY`,
+      description,
+    },
   }
 }
 
@@ -103,11 +135,17 @@ export default async function ProfilePage({ params }: PageProps) {
 
         {/* Identity */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-1">
+          <div className="flex items-center gap-3 mb-1 flex-wrap">
             <h1 className="font-mono text-[24px] font-bold text-text">
               {profile.username}
             </h1>
             <EditProfileModal profile={profile} isOwner={isOwner} />
+            <ShareProfileButton
+              username={profile.username}
+              accuracyScore={profile.accuracy_score}
+              showAccuracy={showAccuracy}
+              baseUrl={process.env.NEXT_PUBLIC_APP_URL ?? ''}
+            />
           </div>
           <p className="font-mono text-[13px] text-[#555] mb-3">
             Vibelord · joined {joinedDate} · {profile.drop_count} Drops
