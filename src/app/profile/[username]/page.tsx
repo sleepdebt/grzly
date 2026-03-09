@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { Profile, Drop } from '@/types'
 import ProfileTabs from '@/components/profile/ProfileTabs'
+import EditProfileModal from '@/components/profile/EditProfileModal'
 import ThemeToggle from '@/components/ThemeToggle'
 
 interface PageProps {
@@ -86,15 +87,28 @@ export default async function ProfilePage({ params }: PageProps) {
       <div className="flex items-start gap-6 mb-8 pb-8 border-b border-border relative">
 
         {/* Avatar */}
-        <div className="w-[72px] h-[72px] rounded-full bg-surface-2 border-2 border-border-hl flex items-center justify-center font-mono text-[24px] font-bold text-accent flex-shrink-0">
-          {profile.username.slice(0, 2).toUpperCase()}
+        <div className="flex-shrink-0">
+          {profile.avatar_url ? (
+            <img
+              src={profile.avatar_url}
+              alt={`@${profile.username}`}
+              className="w-[72px] h-[72px] rounded-full object-cover border-2 border-border-hl"
+            />
+          ) : (
+            <div className="w-[72px] h-[72px] rounded-full bg-surface-2 border-2 border-border-hl flex items-center justify-center font-mono text-[24px] font-bold text-accent select-none">
+              {profile.username.slice(0, 2).toUpperCase()}
+            </div>
+          )}
         </div>
 
         {/* Identity */}
         <div className="flex-1 min-w-0">
-          <h1 className="font-mono text-[24px] font-bold text-text mb-1">
-            {profile.username}
-          </h1>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="font-mono text-[24px] font-bold text-text">
+              {profile.username}
+            </h1>
+            <EditProfileModal profile={profile} isOwner={isOwner} />
+          </div>
           <p className="font-mono text-[13px] text-[#555] mb-3">
             Vibelord · joined {joinedDate} · {profile.drop_count} Drops
           </p>
