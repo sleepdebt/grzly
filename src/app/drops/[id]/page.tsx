@@ -10,6 +10,7 @@ import { DropDetail } from '@/types'
 import ConvictionMeter from '@/components/drops/ConvictionMeter'
 import VoteButtons from '@/components/drops/VoteButtons'
 import SwayzeButton from '@/components/drops/SwayzeModal'
+import ShareDropButton from '@/components/drops/ShareDropButton'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -109,15 +110,36 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const supabase = await createClient()
   const { data } = await supabase
     .from('drops')
-    .select('ticker, company_name, thesis')
+    .select('ticker, company_name, thesis, conviction_score, status, outcome')
     .eq('id', id)
     .single()
 
   if (!data) return { title: 'Drop Not Found' }
 
+  const convStr = data.conviction_score !== null
+    ? ` · ${Math.round(data.conviction_score)}% bearish conviction`
+    : ''
+  const outcomeStr = data.outcome === 'correct' ? ' · ✓ Correct'
+    : data.outcome === 'incorrect' ? ' · ✗ Incorrect' : ''
+  const description = `${data.thesis.slice(0, 120)}${convStr}${outcomeStr}. Not financial advice.`
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
+
   return {
     title: `$${data.ticker} — ${data.company_name ?? data.ticker}`,
-    description: data.thesis.slice(0, 155),
+    description,
+    openGraph: {
+      title: `$${data.ticker} Bear Thesis on GRZLY`,
+      description,
+      url: `${appUrl}/drops/${id}`,
+      siteName: 'GRZLY',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `$${data.ticker} Bear Thesis on GRZLY`,
+      description,
+    },
   }
 }
 
@@ -196,6 +218,17 @@ export default async function DropDetailPage({ params }: PageProps) {
                   SWAYZE
                 </span>
               )}
+              <div className="ml-auto">
+                <ShareDropButton
+                  dropId={drop.id}
+                  ticker={drop.ticker}
+                  companyName={drop.company_name}
+                  convictionScore={drop.conviction_score}
+                  status={drop.status}
+                  outcome={drop.outcome}
+                  baseUrl={process.env.NEXT_PUBLIC_APP_URL ?? ''}
+                />
+              </div>
             </div>
             {drop.company_name && (
               <p className="text-[15px] text-text-dim mb-2">{drop.company_name}</p>
