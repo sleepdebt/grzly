@@ -50,8 +50,9 @@ export async function GET(
     ? (drop.thesis.length > 160 ? drop.thesis.slice(0, 160) + '…' : drop.thesis)
     : ''
 
-  const creatorHandle = !drop?.is_anonymous && drop?.creator
-    ? `@${(drop.creator as { username: string }).username}`
+  const creatorRow = Array.isArray(drop?.creator) ? drop.creator[0] : drop?.creator
+  const creatorHandle = !drop?.is_anonymous && creatorRow?.username
+    ? `@${creatorRow.username as string}`
     : null
 
   const outcomeHtml = isResolved && drop!.price_change_pct !== null

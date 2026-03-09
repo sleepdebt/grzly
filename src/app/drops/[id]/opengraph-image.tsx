@@ -53,8 +53,9 @@ export default async function OGImage({
   const thesisExcerpt = thesis.length > 130 ? thesis.slice(0, 130) + '…' : thesis
 
   // Creator handle (only if not anonymous)
-  const creatorHandle = !drop?.is_anonymous && drop?.creator
-    ? `@${(drop.creator as { username: string }).username}`
+  const creatorRow = Array.isArray(drop?.creator) ? drop.creator[0] : drop?.creator
+  const creatorHandle = !drop?.is_anonymous && creatorRow?.username
+    ? `@${creatorRow.username as string}`
     : null
 
   return new ImageResponse(
