@@ -43,6 +43,7 @@ export interface Profile {
 
   // Metadata
   is_anonymous_default: boolean
+  is_grzly_created: boolean
   created_at: string
   updated_at: string
 }
@@ -172,7 +173,7 @@ export interface Notification {
 
 /** Drop as returned by the feed — includes creator profile summary */
 export interface DropWithCreator extends Drop {
-  creator: Pick<Profile, 'username' | 'display_name' | 'avatar_url' | 'accuracy_score'> | null
+  creator: Pick<Profile, 'username' | 'display_name' | 'avatar_url' | 'accuracy_score' | 'is_grzly_created'> | null
   reddit_mention_count?: number    // count of posts in last 7 days mentioning this ticker
 }
 
