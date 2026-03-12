@@ -120,7 +120,7 @@ export default async function ProfilePage({ params }: PageProps) {
     <div className="max-w-[900px] mx-auto px-6 py-8 pb-20">
 
       {/* Profile header */}
-      <div className="flex items-start gap-6 mb-8 pb-8 border-b border-border relative">
+      <div className="flex items-start gap-6 mb-8 pb-8 border-b border-border">
 
         {/* Avatar */}
         <div className="flex-shrink-0">
@@ -143,6 +143,11 @@ export default async function ProfilePage({ params }: PageProps) {
             <h1 className="font-mono text-[24px] font-bold text-text">
               {profile.username}
             </h1>
+            {profile.is_grzly_created && (
+              <span className="px-2 py-0.5 rounded bg-accent/10 text-accent font-mono text-[11px] font-bold tracking-wide border border-accent/20">
+                GRZLY
+              </span>
+            )}
             <EditProfileModal profile={profile} isOwner={isOwner} />
             <ProBadge isPro={isPro} isOwner={isOwner} />
             <ShareProfileButton
@@ -160,13 +165,6 @@ export default async function ProfilePage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Theme toggle — only visible to the profile owner */}
-        {isOwner && (
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
-        )}
-
         {/* Accuracy block */}
         {showAccuracy && profile.accuracy_score !== null && (
           <div className="flex-shrink-0 text-right pl-7 border-l border-border">
@@ -183,6 +181,13 @@ export default async function ProfilePage({ params }: PageProps) {
               {' · '}
               <strong className="text-text-dim">{profile.resolved_drop_count}</strong> resolved
             </div>
+          </div>
+        )}
+
+        {/* Theme toggle — owner only, far-right flex item */}
+        {isOwner && (
+          <div className="flex-shrink-0 self-start">
+            <ThemeToggle />
           </div>
         )}
       </div>

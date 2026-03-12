@@ -3,7 +3,7 @@
 // API key management UI — shown on Pro users' own profiles
 // Allows generating, naming, and revoking API keys
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 interface ApiKey {
   id: string
@@ -21,6 +21,20 @@ export default function ApiKeyManager() {
   const [revealedKey, setRevealedKey] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [revoking, setRevoking] = useState<string | null>(null)
+  const [mcpCopied, setMcpCopied] = useState(false)
+  const [mcpTipOpen, setMcpTipOpen] = useState(false)
+  const tipRef = useRef<HTMLDivElement>(null)
+
+  // Close MCP tip when clicking outside
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (tipRef.current && !tipRef.current.contains(e.target as Node)) {
+        setMcpTipOpen(false)
+      }
+    }
+    if (mcpTipOpen) document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [mcpTipOpen])
 
   const fetchKeys = useCallback(async () => {
     const res = await fetch('/api/keys')
@@ -168,6 +182,81 @@ export default function ApiKeyManager() {
       <p className="mt-4 text-[11px] text-muted">
         API docs: <code className="font-mono">grzly.vercel.app/api/v1</code> · Use <code className="font-mono">Authorization: Bearer grzly_sk_...</code>
       </p>
+
+      {/* MCP Section */}
+      <div className="mt-8 pt-8 border-t border-border">
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="font-mono text-[13px] font-bold text-text uppercase tracking-widest">MCP Server</h2>
+          {/* Info tip */}
+          <div className="relative" ref={tipRef}>
+            <button
+              onClick={() => setMcpTipOpen(v => !v)}
+              className="w-4 h-4 rounded-full border border-border text-muted hover:border-accent/50 hover:text-accent transition-colors flex items-center justify-center font-mono text-[10px] font-bold leading-none"
+              aria-label="What is MCP?"
+            >
+              ?
+            </button>
+            {mcpTipOpen && (
+              <div className="absolute left-0 top-6 z-20 w-[280px] bg-surface border border-border rounded-[10px] p-4 shadow-lg">
+                <p className="font-mono text-[11px] font-bold text-accent uppercase tracking-wider mb-2">What is MCP?</p>
+                <p className="text-[12px] text-text-dim leading-[1.6]">
+                  The Model Context Protocol (MCP) lets AI assistants like Claude connect directly to GRZLY. Once configured, Claude can read the feed, look up Drops, check conviction scores, and browse the Bear Book — without you copy-pasting anything.
+                </p>
+                <p className="text-[12px] text-muted mt-2 leading-[1.6]">
+                  Your API key authenticates the connection. Keep it private.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+        <p className="text-[12px] text-muted mb-4">
+          Connect GRZLY to Claude Desktop or any MCP-compatible AI client.
+        </p>
+
+        {keys.length === 0 ? (
+          <p className="text-[12px] text-muted font-mono">Generate an API key above to get your MCP config.</p>
+        ) : (() => {
+          const firstKey = keys[0]
+          const mcpConfig = JSON.stringify({
+            mcpServers: {
+              grzly: {
+                command: 'npx',
+                args: ['-y', 'grzly-mcp'],
+                env: {
+                  GRZLY_API_KEY: `${firstKey.key_prefix}...`,
+                },
+              },
+            },
+          }, null, 2)
+
+          return (
+            <div>
+              <p className="text-[11px] text-muted mb-2">
+                Add this to your <code className="font-mono">claude_desktop_config.json</code>
+                {' '}(replace the key with your full key):
+              </p>
+              <div className="relative group">
+                <pre className="bg-surface border border-border rounded-[10px] px-4 py-3 text-[11px] font-mono text-text-dim overflow-x-auto whitespace-pre leading-[1.7]">
+                  {mcpConfig}
+                </pre>
+                <button
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(mcpConfig)
+                    setMcpCopied(true)
+                    setTimeout(() => setMcpCopied(false), 2000)
+                  }}
+                  className="absolute top-2 right-2 px-2.5 py-1 rounded-[6px] bg-surface-2 border border-border text-[10px] font-mono text-muted hover:text-accent hover:border-accent/40 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  {mcpCopied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+              <p className="mt-3 text-[11px] text-muted leading-[1.6]">
+                Restart Claude Desktop after saving. GRZLY tools will appear in Claude's tool panel.
+              </p>
+            </div>
+          )
+        })()}
+      </div>
     </div>
   )
 }
