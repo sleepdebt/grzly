@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="242" height="32" viewBox="0 0 242 32" fill="none" role="img" aria-label="Built in the Midwest">
+
+  <!-- Wheat stalk icon (lime green, centered at x=11) -->
+
+  <!-- Stem -->
+  <line x1="11" y1="7" x2="11" y2="28" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Top grain -->
+  <ellipse cx="11" cy="5" rx="1.5" ry="3" fill="#c8ff00"/>
+
+  <!-- Left grains -->
+  <ellipse cx="8.5" cy="10" rx="1.5" ry="3.2" fill="#c8ff00" transform="rotate(-28 8.5 10)"/>
+  <ellipse cx="7.8" cy="15.5" rx="1.5" ry="3.2" fill="#c8ff00" transform="rotate(-22 7.8 15.5)"/>
+  <ellipse cx="8.2" cy="21" rx="1.4" ry="2.8" fill="#c8ff00" transform="rotate(-14 8.2 21)"/>
+
+  <!-- Right grains -->
+  <ellipse cx="13.5" cy="10" rx="1.5" ry="3.2" fill="#c8ff00" transform="rotate(28 13.5 10)"/>
+  <ellipse cx="14.2" cy="15.5" rx="1.5" ry="3.2" fill="#c8ff00" transform="rotate(22 14.2 15.5)"/>
+  <ellipse cx="13.8" cy="21" rx="1.4" ry="2.8" fill="#c8ff00" transform="rotate(14 13.8 21)"/>
+
+  <!-- Vertical separator -->
+  <line x1="28" y1="9" x2="28" y2="23" stroke="#333333" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- "BUILT IN THE MIDWEST" label -->
+  <text
+    x="38"
+    y="21"
+    font-family="'Space Grotesk', system-ui, -apple-system, sans-serif"
+    font-size="11.5"
+    font-weight="600"
+    letter-spacing="2.2"
+    fill="#888888">BUILT IN THE MIDWEST</text>
+
+</svg>

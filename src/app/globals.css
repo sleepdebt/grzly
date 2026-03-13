@@ -42,9 +42,15 @@
   padding: 0;
 }
 
+/* Eliminate 300ms tap delay on touch devices for all interactive elements */
+a, button, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+
 html {
   background: rgb(var(--bg));
   color: rgb(var(--text));
+  touch-action: manipulation;
 }
 
 /* Custom scrollbar */
@@ -105,6 +111,13 @@ html {
 }
 .bb-entry.correct::before  { background: rgb(var(--correct)); }
 .bb-entry.incorrect::before { background: rgb(var(--hot)); }
+
+/* Built-in-the-Midwest logo — theme-aware swap (no JS, no flash) */
+.midwest-logo-dark  { display: block; }
+.midwest-logo-light { display: none;  }
+
+[data-theme="light"] .midwest-logo-dark  { display: none;  }
+[data-theme="light"] .midwest-logo-light { display: block; }
 
 /* Filter chips — pill shape */
 .filter-chip {

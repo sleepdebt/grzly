@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Space_Mono } from 'next/font/google'
 import { createClient } from '@/lib/supabase/server'
 import Nav from '@/components/Nav'
+import Footer from '@/components/Footer'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -59,20 +60,16 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${spaceMono.variable}`}>
-      {/* Runs before React hydration to avoid theme flash */}
-      <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('grzly-theme');if(t)document.documentElement.setAttribute('data-theme',t);})()` }} />
       <body className="bg-bg text-text font-sans antialiased">
+        {/* Must be first in body — runs before paint to avoid theme flash */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('grzly-theme');if(t)document.documentElement.setAttribute('data-theme',t);})()` }} />
         <Nav user={user} username={username} avatarUrl={avatarUrl} />
 
         <main className="min-h-screen">
           {children}
         </main>
 
-        {/* Persistent disclaimer */}
-        <footer className="border-t border-border py-6 text-center text-xs text-muted">
-          GRZLY is not a registered investment advisor. All content is general research and community opinion, not financial advice.
-          Users execute trades independently through their own brokers.
-        </footer>
+        <Footer />
       </body>
     </html>
   )
