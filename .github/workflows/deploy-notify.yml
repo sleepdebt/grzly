@@ -19,8 +19,6 @@ jobs:
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Send Slack notification
         run: |
-          curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
           -H 'Content-Type: application/json' \
-          -d '{
-            "text": "🚀 *Deployment to main*\n\n*Commit:* ${{ steps.commit.outputs.message }}\n*Author:* ${{ steps.commit.outputs.author }}\n*SHA:* `${{ steps.commit.n\nView commit"
-          }'
+          -d "{\"text\": \"🚀 *Deployment to main*\n\n*Commit:* ${{ steps.commit.outputs.message }}\n*Author:* ${{ steps.commit.outputs.author }}\n*SHA:* \`${{ steps.commit.outputs.sha_short }}\`\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|View commit>\"}"
