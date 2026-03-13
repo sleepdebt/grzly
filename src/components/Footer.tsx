@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="border-t border-border bg-surface">
 
       {/* Main footer row */}
-      <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-0 sm:justify-between">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-0 sm:justify-between">
 
         {/* Left: brand */}
         <span className="font-bold tracking-tight text-accent text-sm">GRZLY</span>
@@ -43,7 +43,7 @@ export default function Footer() {
       </div>
 
       {/* Disclaimer row */}
-      <div className="border-t border-border px-4 py-3 text-center text-xs text-muted/60">
+      <div className="border-t border-border px-6 py-3 text-center text-xs text-muted/60">
         GRZLY is not a registered investment advisor. All content is general research and
         community opinion, not financial advice. Users execute trades independently through
         their own brokers.
