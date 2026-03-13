@@ -47,7 +47,7 @@ Everyone's a bear. Prove it.`,
     id: 'bearbook',
     eyebrow: 'Step 3 — The Bear Book',
     headline: 'Where short ideas go to live or die.',
-    body: `When a Drop's window closes, KEANU runs — Polygon pulls the price, the outcome resolves automatically. Correct or not, the record stands.
+    body: `When a Drop's window closes, KEANU runs — real market data resolves the outcome automatically. Correct or not, the record stands.
 
 Every resolved Drop lives in the Bear Book permanently. Your accuracy compounds. The best Vibelords rise. Bad calls don't get buried quietly.
 
