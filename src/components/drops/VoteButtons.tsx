@@ -9,7 +9,7 @@
 //   - drop resolved/archived: voting closed message
 //   - optimistic update: shows new conviction immediately before server confirms
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { VoteDirection, DropStatus } from '@/types'
 
@@ -29,6 +29,10 @@ export default function VoteButtons({
   const [userVote, setUserVote] = useState<VoteDirection | null>(initialUserVote)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // useRef guard — unlike useState, ref updates are synchronous and visible
+  // immediately to the next click handler, even before React re-renders.
+  // This is the only reliable way to block double-clicks.
+  const votingInFlight = useRef(false)
 
   const votingOpen = dropStatus === 'active' || dropStatus === 'extended'
 
@@ -40,8 +44,9 @@ export default function VoteButtons({
 
     if (userVote) return    // already voted — votes are immutable
     if (!votingOpen) return
-    if (loading) return
+    if (votingInFlight.current) return  // ref check: synchronous, stale-closure-proof
 
+    votingInFlight.current = true
     setLoading(true)
     setError(null)
 
@@ -65,6 +70,7 @@ export default function VoteButtons({
       }
     }
 
+    votingInFlight.current = false
     setLoading(false)
   }
 
