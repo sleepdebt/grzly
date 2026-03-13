@@ -16,44 +16,44 @@ const STEPS = [
 
 They post about it. They do the math in public. And when it finally breaks — the people who called it have no record. No proof. No credit.
 
-That's the gap GRZLY was built to close.`,
+GRZLY changes that. Short the hype. Build your record.`,
     cta: 'How it works →',
   },
   {
     id: 'drops',
     eyebrow: 'Step 1 — The Drop',
-    headline: 'Put your thesis on the record.',
-    body: `A Drop is a structured bearish thesis: a ticker, your written argument, and a resolution window — 30 days to a year.
+    headline: 'Bear thesis. Public record. No excuses.',
+    body: `A Drop is your structured short thesis: a ticker, your written argument, and a resolution window — 30 days to a year.
 
-Once published, it's timestamped and public. You own it. No deleting it when you're wrong, and no one can take credit when you're right.
+Once published, it's timestamped and on the record. You own it. No deleting it when you're wrong. No anonymity when you're right.
 
-The market decides. GRZLY keeps the receipt.`,
+Publish the thesis. Let the market decide.`,
     cta: 'Next →',
-    stat: { label: '200 char minimum', sub: 'Thesis must have real reasoning' },
+    stat: { label: 'Put it on the record.', sub: 'Every Drop is timestamped and permanent' },
   },
   {
     id: 'conviction',
     eyebrow: 'Step 2 — The Pack',
     headline: 'The crowd votes. Accuracy weights it.',
-    body: `Other Vibelords vote on every Drop: Bearish if they believe the thesis, Skeptical if they don't.
+    body: `Other Vibelords vote on every Drop — Bearish if they believe the thesis, Skeptical if they don't.
 
-The Conviction Score isn't just a headcount — it's weighted by each voter's historical accuracy. A vote from a Vibelord who's been right eight times out of ten counts more than a first-timer.
+The Conviction Score isn't a headcount. It's accuracy-weighted: proven Vibelords carry more weight. When 800 people independently converge on the same ticker with 87% conviction, that's signal — not noise.
 
-When 800 people independently converge on the same ticker, that's signal.`,
+Everyone's a bear. Prove it.`,
     cta: 'Next →',
-    stat: { label: 'Accuracy-weighted', sub: 'Proven voters carry more weight' },
+    stat: { label: 'Collective conviction.', sub: 'Individual accountability.' },
   },
   {
     id: 'bearbook',
     eyebrow: 'Step 3 — The Bear Book',
-    headline: 'The record doesn\'t disappear.',
-    body: `When a Drop's window closes, Polygon pulls the price. GRZLY resolves the outcome automatically — correct or not.
+    headline: 'Where short ideas go to live or die.',
+    body: `When a Drop's window closes, KEANU runs — Polygon pulls the price, the outcome resolves automatically. Correct or not, the record stands.
 
-Every resolved Drop lives in the Bear Book permanently. Your accuracy score compounds with every call. The best Vibelords rise. Bad calls don't get buried.
+Every resolved Drop lives in the Bear Book permanently. Your accuracy compounds. The best Vibelords rise. Bad calls don't get buried quietly.
 
-No trades. No money. Just truth — and the permanent record of who saw it coming.`,
+No trades. No money. The internet's bear book — and your name is in it.`,
     cta: 'Start dropping →',
-    stat: { label: 'Auto-resolved', sub: 'Real price data, no disputes' },
+    stat: { label: 'Auto-resolved by KEANU.', sub: 'Real price data. No disputes.' },
   },
 ]
 
