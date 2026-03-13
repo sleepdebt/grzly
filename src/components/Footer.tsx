@@ -15,7 +15,6 @@ export default function Footer() {
         <nav className="flex items-center gap-5 text-xs text-muted">
           <Link href="/terms"   className="hover:text-text transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-text transition-colors">Privacy</Link>
-          <Link href="/bear-book" className="hover:text-text transition-colors">Bear Book</Link>
         </nav>
 
         {/* Right: copyright + Built in the Midwest */}
