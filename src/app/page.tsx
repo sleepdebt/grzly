@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { DropWithCreator, FeedParams } from '@/types'
 import DropFeed from '@/components/drops/DropFeed'
+import OnboardingModal from '@/components/OnboardingModal'
 
 interface PageProps {
   searchParams: Promise<FeedParams>
@@ -76,6 +77,10 @@ export default async function FeedPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
+      <Suspense fallback={null}>
+        <OnboardingModal />
+      </Suspense>
+
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold mb-1">Active Drops</h1>

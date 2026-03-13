@@ -54,7 +54,10 @@ export default function SignUpPage() {
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { username: username.toLowerCase() } },
+      options: {
+        data: { username: username.toLowerCase() },
+        emailRedirectTo: `${window.location.origin}/?welcome=true`,
+      },
     })
 
     if (authError) {
@@ -69,7 +72,7 @@ export default function SignUpPage() {
       return
     }
 
-    router.push('/')
+    router.push('/?welcome=true')
     router.refresh()
   }
 
