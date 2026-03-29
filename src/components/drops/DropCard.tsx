@@ -101,6 +101,11 @@ export default function DropCard({ drop }: DropCardProps) {
               >
                 @{drop.creator.username}
               </a>
+              {drop.creator.is_grzly_created && (
+                <span className="px-1.5 py-px rounded bg-accent/10 text-accent font-mono text-[10px] font-bold tracking-wide border border-accent/20">
+                  GRZLY
+                </span>
+              )}
               {drop.creator.accuracy_score !== null && (
                 <span className="px-1.5 py-px rounded bg-accent/8 text-accent-dim font-mono text-[10px] font-bold">
                   {drop.creator.accuracy_score.toFixed(0)}%

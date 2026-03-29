@@ -15,6 +15,18 @@
     {
       "path": "/api/cron/pack-sentiment",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/seed-drops",
+      "schedule": "0 15 * * 1-5"
+    },
+    {
+      "path": "/api/cron/seed-drops-b",
+      "schedule": "30 18 * * 1-5"
+    },
+    {
+      "path": "/api/cron/seed-drops-c",
+      "schedule": "0 21 * * 1-5"
     }
   ]
 }

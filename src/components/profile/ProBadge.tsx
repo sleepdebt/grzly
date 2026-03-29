@@ -2,8 +2,9 @@
 
 // Displays PRO badge and upgrade/manage billing button on profile page
 
-import { useState } from 'react'
+import { useState, startTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import ProUpgradeModal from './ProUpgradeModal'
 
 interface ProBadgeProps {
   isPro: boolean
@@ -12,10 +13,12 @@ interface ProBadgeProps {
 
 export default function ProBadge({ isPro, isOwner }: ProBadgeProps) {
   const [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const router = useRouter()
 
   async function handleUpgrade() {
-    setLoading(true)
+    setShowModal(false)
+    startTransition(() => setLoading(true))
     try {
       const res = await fetch('/api/stripe/checkout', { method: 'POST' })
       const { url, error } = await res.json()
@@ -23,12 +26,12 @@ export default function ProBadge({ isPro, isOwner }: ProBadgeProps) {
       window.location.href = url
     } catch (err) {
       console.error(err)
-      setLoading(false)
+      startTransition(() => setLoading(false))
     }
   }
 
   async function handleManageBilling() {
-    setLoading(true)
+    startTransition(() => setLoading(true))
     try {
       const res = await fetch('/api/stripe/portal', { method: 'POST' })
       const { url, error } = await res.json()
@@ -36,7 +39,7 @@ export default function ProBadge({ isPro, isOwner }: ProBadgeProps) {
       window.location.href = url
     } catch (err) {
       console.error(err)
-      setLoading(false)
+      startTransition(() => setLoading(false))
     }
   }
 
@@ -69,12 +72,21 @@ export default function ProBadge({ isPro, isOwner }: ProBadgeProps) {
   }
 
   return (
-    <button
-      onClick={handleUpgrade}
-      disabled={loading}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-accent/40 bg-accent/5 text-accent text-xs font-mono font-bold tracking-wider hover:bg-accent/10 transition-colors disabled:opacity-50"
-    >
-      {loading ? 'Loading...' : '↑ Upgrade to Pro'}
-    </button>
+    <>
+      {showModal && (
+        <ProUpgradeModal
+          onConfirm={handleUpgrade}
+          onClose={() => setShowModal(false)}
+          loading={loading}
+        />
+      )}
+      <button
+        onClick={() => setShowModal(true)}
+        disabled={loading}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-accent/40 bg-accent/5 text-accent text-xs font-mono font-bold tracking-wider hover:bg-accent/10 transition-colors disabled:opacity-50"
+      >
+        {loading ? 'Loading...' : '↑ Upgrade to Pro'}
+      </button>
+    </>
   )
 }

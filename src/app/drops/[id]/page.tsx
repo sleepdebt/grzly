@@ -32,7 +32,8 @@ async function getDrop(id: string): Promise<FullDropDetail | null> {
         username,
         display_name,
         avatar_url,
-        accuracy_score
+        accuracy_score,
+        is_grzly_created
       ),
       lore_events (
         id, event_type, narrative, prompt_version, model_used, created_at
@@ -535,9 +536,16 @@ export default async function DropDetailPage({ params }: PageProps) {
                   {drop.creator.username.slice(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-[13px] font-semibold text-accent-dim group-hover:text-accent transition-colors">
-                    @{drop.creator.username}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[13px] font-semibold text-accent-dim group-hover:text-accent transition-colors">
+                      @{drop.creator.username}
+                    </p>
+                    {(drop.creator as unknown as { is_grzly_created?: boolean }).is_grzly_created && (
+                      <span className="px-1.5 py-px rounded bg-accent/10 text-accent font-mono text-[10px] font-bold tracking-wide border border-accent/20">
+                        GRZLY
+                      </span>
+                    )}
+                  </div>
                   {drop.creator.accuracy_score !== null && (
                     <p className="font-mono text-[11px] text-[#555] mt-0.5">
                       <strong className="text-text-dim">{drop.creator.accuracy_score.toFixed(0)}%</strong> accuracy

@@ -39,7 +39,7 @@ export default function FAQPage() {
         <h1 className="font-mono text-[26px] font-bold text-text mb-2">
           How <span className="text-accent">GRZLY</span> Works
         </h1>
-        <p className="text-[14px] text-[#555] leading-relaxed">
+        <p className="text-[14px] text-[#555] leading-relaxed max-w-[600px]">
           GRZLY is a public record of bearish conviction. Users publish theses on stocks, the community
           votes, and price data settles the argument. No trades, no recommendations — just conviction on record.
         </p>

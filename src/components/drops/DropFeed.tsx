@@ -64,9 +64,14 @@ export default function DropFeed({ initialDrops, initialParams }: DropFeedProps)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const searchRowRef = useRef<HTMLDivElement>(null)
+  const isMounted = useRef(false)
 
-  // Re-fetch when filters or ticker changes
+  // Re-fetch when filters or ticker changes — skip initial mount (SSR data is already correct)
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true
+      return
+    }
     async function fetchDrops() {
       setLoading(true)
       const params = new URLSearchParams()

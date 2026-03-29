@@ -2,12 +2,13 @@
 // Returns paginated Bear Book feed — requires Pro API key
 //
 // Query params:
-//   sort     conviction | recent | expiring  (default: conviction)
-//   horizon  7 | 30 | 90 | 180
-//   ticker   e.g. TSLA
-//   status   active | extended | resolved | archived | all  (default: active,extended)
-//   page     (default: 1)
-//   limit    max 50 (default: 20)
+//   sort           conviction | recent | expiring  (default: conviction)
+//   horizon        7 | 30 | 90 | 180
+//   ticker         e.g. TSLA
+//   status         active | extended | resolved | archived | all  (default: active,extended)
+//   min_conviction minimum conviction score 0–100
+//   page           (default: 1)
+//   limit          max 50 (default: 20)
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase/server'
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest) {
   const horizon = searchParams.get('horizon') ? Number(searchParams.get('horizon')) : undefined
   const ticker = searchParams.get('ticker')?.toUpperCase() || undefined
   const statusParam = searchParams.get('status') ?? 'active,extended'
+  const minConviction = searchParams.get('min_conviction') ? Number(searchParams.get('min_conviction')) : undefined
   const page = Math.max(1, Number(searchParams.get('page') ?? 1))
   const limit = Math.min(50, Math.max(1, Number(searchParams.get('limit') ?? 20)))
   const offset = (page - 1) * limit
@@ -48,6 +50,7 @@ export async function GET(req: NextRequest) {
 
   if (horizon) query = query.eq('time_horizon', `${horizon} days`)
   if (ticker) query = query.eq('ticker', ticker)
+  if (minConviction !== undefined) query = query.gte('conviction_score', minConviction)
 
   switch (sort) {
     case 'recent':   query = query.order('created_at', { ascending: false }); break

@@ -3,7 +3,7 @@
 // ShareProfileButton — copy link, copy embed code, share on X / Bluesky
 // Shown on every profile page (not owner-only)
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 
 interface ShareProfileButtonProps {
   username: string
@@ -20,8 +20,6 @@ export default function ShareProfileButton({
 }: ShareProfileButtonProps) {
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState<'link' | 'embed' | null>(null)
-  const ref = useRef<HTMLDivElement>(null)
-
   const profileUrl = `${baseUrl}/profile/${username}`
   const embedSrc  = `${baseUrl}/api/profile/${username}/card`
   const embedCode = `<iframe src="${embedSrc}" width="420" height="200" frameborder="0" style="border:1px solid #1f1f1f;border-radius:14px;overflow:hidden;"></iframe>`
@@ -32,16 +30,6 @@ export default function ShareProfileButton({
 
   const xUrl   = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(profileUrl)}`
   const bskyUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(`${shareText} ${profileUrl}`)}`
-
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return
-    function onMouseDown(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', onMouseDown)
-    return () => document.removeEventListener('mousedown', onMouseDown)
-  }, [open])
 
   async function copyText(text: string, type: 'link' | 'embed') {
     try {
@@ -54,10 +42,12 @@ export default function ShareProfileButton({
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div className="relative">
+      {/* Backdrop — closes dropdown when clicking outside. Button sits at z-40 above this z-30 layer */}
+      {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />}
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] border border-border text-[12px] font-mono text-muted hover:text-text-dim hover:border-border-hl transition-colors"
+        className="relative z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-[7px] border border-border text-[12px] font-mono text-muted hover:text-text-dim hover:border-border-hl transition-colors"
       >
         <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden>
           <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -66,7 +56,7 @@ export default function ShareProfileButton({
       </button>
 
       {open && (
-        <div className="absolute top-[calc(100%+6px)] left-0 z-40 bg-surface border border-border-hl rounded-[10px] p-1.5 shadow-2xl w-[210px]">
+        <div className="absolute top-[calc(100%+6px)] left-0 z-40 bg-surface border border-border-hl rounded-[10px] p-1.5 shadow-2xl w-[210px]" onClick={e => e.stopPropagation()}>
 
           {/* Copy link */}
           <button
