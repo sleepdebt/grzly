@@ -3,6 +3,7 @@ import { Space_Grotesk, Space_Mono } from 'next/font/google'
 import { createClient } from '@/lib/supabase/server'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -73,6 +74,7 @@ export default async function RootLayout({
         </main>
 
         <Footer />
+        <Analytics />
       </body>
     </html>
   )
